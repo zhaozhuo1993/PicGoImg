@@ -1,0 +1,127 @@
+﻿<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title></title>
+    <style type="text/css">
+        .Btn {
+            width: 200px;
+            text-align: left
+        }
+    </style>
+    <script src="../JS/jquery-3.4.1.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function GetYYInfo(obj) {
+            //0身份证号 1联系电话 2二维码
+            $.post("../CTL/HSLive.ashx?operate=GetYYPatInfo", GetJsonStr(["type", "val", "yyid"], obj), function (result) {
+                $("span").html(result);
+            });
+        }
+        function GetYYItemsInfoBySN(obj) {
+            $.post("../CTL/HSLive.ashx?operate=GetYYItemsInfoBySN", GetJsonStr(["reg_no", "yyid"], obj), function (result) {
+                $("span").html(result);
+            });
+        }
+
+        function HSLiveRegister(obj) {
+            $.post("../CTL/HSLive.ashx?operate=HSLiveRegister", GetJsonStr(["reg_no", "yyid", "bblx", "cjd"], obj), function (result) {
+                $("span").html(result);
+            });
+        }
+        function GetNewBarNO(obj) {
+
+            //$.post("../CTL/HSLive.ashx?operate=GetNewBarNO", {}, function (result) {
+            //    $("span").html(result);
+            //});
+            jQuery.support.cors = true;
+            $.post("http://39.105.104.232/hs/CTL/HSLive.ashx?operate=GetNewBarN", {}, function (result) {
+                $("span").html(result);
+            });
+            $.ajax({
+                type: "get",    //请求方式
+                async: true,    //是否异步
+                url: "http://39.105.104.232/hs/CTL/HSLive.ashx?operate=GetNewBarNO",
+                dataType: "jsonp",    //跨域json请求一定是jsonp
+                jsonp: "callbackparam",    //跨域请求的参数名，默认是callback
+                //jsonpCallback:"successCallback",    //自定义跨域参数值，回调函数名也是一样，默认为jQuery自动生成的字符串
+                data: { "query": "civilnews" },    //请求参数
+
+                beforeSend: function () {
+                    //请求前的处理
+                },
+
+                success: function (data) {
+                    //请求成功处理，和本地回调完全一样
+                },
+
+                complete: function () {
+                    //请求完成的处理
+                },
+
+                error: function () {
+                    //请求出错处理
+                }
+            });
+
+        }
+        function PrintNewBar(obj) {
+
+            $.post("../CTL/HSLive.ashx?operate=PrintNewBar", GetJsonStr(["reg_sns"], obj), function (result) {
+                $("span").html(result);
+            });
+        }
+        function GetJsonStr(Arr, obj) {
+            var InJson = {};
+            for (var i = 0; i < Arr.length; i++) {
+                InJson[Arr[i]] = obj.nextElementSibling.value;
+                obj = obj.nextElementSibling;
+            }
+            return InJson;
+        }
+    </script>
+</head>
+<body>
+    <input type="button" class="Btn" value="1.获取预约信息" onclick="GetYYInfo(this);" />
+    <select>
+        <option value="1">联系电话</option>
+        <option value="0">身份证号</option>
+        <option value="2">二维码</option>
+    </select>
+    <input type="text" value="18701639479" />
+    医院ID
+    <input type="text" value="000001" />
+    <br />
+
+    <input type="button" class="Btn" value="2.根据预约号获取单据信息" onclick="GetYYItemsInfoBySN(this);" />
+    预约号
+    <input type="text" value="1" />
+    医院ID
+    <input type="text" value="000001" />
+    <br />
+
+    <input type="button" class="Btn" value="3.线下核酸登记" onclick="HSLiveRegister(this);" />
+    预约号
+    <input type="text" value="1" />
+    医院ID
+    <input type="text" value="000001" />
+    标本类型
+    <select>
+        <option value="01">咽拭子</option>
+        <option value="02">鼻咽拭子</option>
+        <option value="03">血</option>
+    </select>
+    采集点ID
+    <input type="text" value="101" />
+    <br />
+
+    <input type="button" class="Btn" value="4.获取二维码" onclick="GetNewBarNO(this);" />
+    <br />
+    <input type="button" class="Btn" value="5.打印二维码" onclick="PrintNewBar(this);" />
+    预约号(以,拼接一起)
+    <input type="text" value="1,2" />
+
+    </table>
+    <br />
+    <span></span>
+</body>
+</html>

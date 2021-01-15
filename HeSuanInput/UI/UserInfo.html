@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>录入信息</title>
+    <link href="../CSS/weui.css" rel="stylesheet" />
+    <script src="../JS/setting.js"></script>
+    <style>
+        html, body {
+            /*background-color: rgb(245,245,245);*/
+        }
+
+        .hl_btn {
+            padding: 30px 16px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .weui-btn_cell, #send_phone_verification_num {
+            display: block;
+            width: 100%;
+            height: 100%;
+            color: rgb(255,255,255);
+            border-radius: 50px;
+            background: #11cb90;
+            background: -moz-linear-gradient(left, #11cb90 0%, #32deb8 100%);
+            background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#11cb90), color-stop(100%,#32deb8));
+            background: -webkit-linear-gradient(left, #11cb90 0%,#32deb8 100%);
+            background: -o-linear-gradient(left, #11cb90 0%,#32deb8 100%);
+            /*background: -ms-linear-gradient(top, #11cb90 0%,#32deb8 100%);*/
+            background: linear-gradient(to right, #11cb90 0%,#32deb8 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#11cb90', endColorstr='#32deb8',GradientType=0 );
+        }
+
+        .weui-cell {
+            display: block;
+            padding: 8px 16px;
+        }
+
+        .weui-cell__hd {
+            width: 100%;
+        }
+
+        .weui-cell__bd {
+            margin-top: 10px;
+        }
+
+        .weui-btn {
+            width: 100px;
+            padding: 0;
+            background-color: rgb(255,255,255);
+            border-radius: 0;
+        }
+
+        #imgCode {
+            width: 100px;
+        }
+
+        #send_phone_verification_num {
+            width: 100px;
+            padding: 8px 0;
+            font-weight: normal;
+            font-size: 14px;
+        }
+
+        #div_xh {
+            display: none;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .f_sb {
+            justify-content: space-between;
+        }
+
+        .h-hvc {
+            display: flex;
+            justify-content: center !important;
+            align-items: center;
+        }
+
+        #xzz, #yymc {
+            width: calc(100% - 100px);
+            overflow-wrap: anywhere;
+            text-align: right;
+        }
+
+        .bh {
+            font-size: 30px;
+            color: red;
+        }
+
+        .bcTarget_div {
+            width: 100%;
+        }
+
+        #qrcode {
+            margin: auto;
+            width: 180px;
+            left: 0%;
+            position: relative;
+        }
+
+        .tips {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: red;
+        }
+
+        .ts {
+            width: calc(100% - 20px);
+            margin: 10px 10px 0 10px;
+            color: #D9AD77;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ts h-hvc">请务必将登记结果页面出示或截图展示给医务人员，并配合登记采样编号</div>
+    <div>
+        <div class="h-hvc row bh"><label>编号</label><label id="bh">1-1</label></div>
+        <div class="bcTarget_div">
+            <div id="qrcode"></div>
+            <div class="tips">请出示给医务人员</div>
+        </div>
+    </div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd row f_sb"><label>姓名</label><label id="xm"></label></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd row f_sb"><label>身份证号</label><label id="sfzh"></label></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd row f_sb"><label>性别</label><label id="xb"></label></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd row f_sb"><label>年龄</label><label id="nl"></label></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd row f_sb"><label>手机号</label><label id="sjh"></label></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd row f_sb"><label>现住址</label><label id="xzz"></label></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd row f_sb"><label>是否去过高风险地区</label><label id="gfx"></label></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd row f_sb"><label>是否发热</label><label id="fr"></label></div>
+        </div>
+        <div class="weui-cell" id="ryfldiv" style="display: none">
+            <div class="weui-cell__hd row f_sb"><label>人员分类</label><label id="ryfl"></label></div>
+        </div>
+        <div class="weui-cell" id="sfzfdiv" style="display: none">
+            <div class="weui-cell__hd row f_sb"><label>是否自费</label><label id="sfzf"></label></div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd row f_sb"><label class="weui-label">采样机构</label><label id="yymc"></label></div>
+        </div>
+    </div>
+    <div class="hl_btn">
+        <div style="width: 46%">
+            <a class="weui-btn_cell" href="javascript:" id="toResultQuery">结果查询</a>
+        </div>
+        <div style="width: 46%; margin-left: 6%">
+            <a class="weui-btn_cell" href="javascript:" id="clear">重新录入</a>
+        </div>
+    </div>
+</body>
+</html>
+<script src="../JS/jquery-3.4.1.js"></script>
+<script src="../JS/weui.js"></script>
+<script src="../JS/jquery.qrcode.min.js"></script>
+<script src="../JS/Tools.js"></script>
+<script>
+    let info = GetLocalInfo();
+    if (!IsNullOrEmpty(info)) {
+        let infodata = JSON.parse(info);
+        if (infodata.yyid == 13) {
+            $("#ryfldiv").show()
+            $("#sfzfdiv").show()
+        }
+        $("#bh").html(infodata.zh + '-' + infodata.xh);
+        $("#xm").html(infodata.xm);
+        $("#sfzh").html(sub(infodata.sfzh, 10, 2));
+        $("#xb").html(infodata.xb);
+        $("#nl").html(infodata.nl);
+        $("#sjh").html(sub(infodata.sjh, 3, 4));
+        $("#xzz").html(infodata.xzz);
+        $("#gfx").html(infodata.gfx == "0" ? "否" : "是");
+        $("#fr").html(infodata.fr == "0" ? "否" : "是");
+        $("#ryfl").html(infodata.ryfl);
+        $("#sfzf").html(infodata.sfzf == "0" ? "否" : (infodata.sfzf == "1" ? "是" : ""));
+        $("#yymc").html(infodata.yymc);
+        //姓名 | 性别 | 年龄 | 身份证号 | 现住址 | 联系电话 | 是否去过高风险地区 | 是否发热 | 唯一采样编码
+        let str = infodata.xm + "|" + infodata.xb + "|" + infodata.nl + "|" + infodata.sfzh + "|" + infodata.xzz + "|" + infodata.sjh + "|" + infodata.gfx + "|" + infodata.fr + "|" + infodata.yyid + "-" + infodata.zh + "-" + infodata.xh;
+        str = encodeURI(str);
+        $('#qrcode').qrcode({ width: 180, height: 180, text: str, correctLevel: 1 });
+    }
+    else {
+        weui.alert("请退出程序重新扫码");
+    }
+    //回退
+    $("#clear").click(function () {
+        if (!IsNullOrEmpty(info)) {
+            localStorage.clear();
+            window.history.back()
+            //window.location.href = './UserBind.html?yyid=' + infodata.yyid + '&zh=' + infodata.zh;
+        }
+    })
+    //跳转核酸信息查询
+    $("#toResultQuery").on('click', function () {
+        let infodata = JSON.parse(info);
+        location.href = "./ResultQuery.html?yyid=" + infodata.yyid
+    })
+    //字符串中间***替换
+    function sub(str, frontLen, endLen) {
+        var len = str.length - frontLen - endLen;
+        var xing = '';
+        for (var i = 0; i < len; i++) {
+            xing += '*';
+        }
+        return str.substring(0, frontLen) + xing + str.substring(str.length - endLen);
+    }
+</script>

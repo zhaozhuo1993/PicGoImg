@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>二维码</title>
+    <style>
+        #qrcode {
+            margin: auto;
+            width: 180px;
+            left: 0%;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .tips {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: darkslategray;
+        }
+    </style>
+</head>
+<body>
+    <div class="bcTarget_div">
+        <div id="qrcode"></div>
+        <p class="tips">请出示给医务人员</p>
+    </div>
+</body>
+</html>
+<script src="../JS/jquery-3.4.1.js"></script>
+<script src="../JS/weui.js"></script>
+<script src="../JS/jquery.qrcode.min.js"></script>
+<script src="../JS/Tools.js"></script>
+<script>
+    let info = JSON.parse(GetLocalInfo("info"));
+    let str = info.XM + "|" + info.XB + "|" + info.NL + "|" + info.SFZH + "|" + info.XZZ + "|" + info.SJH + "|" + info.GFX + "|" + info.FR;
+    str = encodeURI(str);
+    function CreateQrCode(code) {
+        // width ：设置二维码宽度
+        // height ：设置二维码高度
+        $('#qrcode').qrcode({ width: 180, height: 180, text: code });
+    }
+    CreateQrCode(str);
+</script>

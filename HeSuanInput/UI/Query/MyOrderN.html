@@ -1,0 +1,357 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>申请详情</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
+    <link href="../../CSS/weui.min.css" rel="stylesheet" />
+    <link href="../../CSS/jquery-weui.css" rel="stylesheet" />
+    <style>
+        .tit_cen {
+            text-align: center;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+            background-color: #F4F3F8;
+        }
+
+        .div_foolt {
+            position: fixed;
+            bottom: 1.5em;
+            left: 0;
+            right: 0;
+        }
+
+        .top {
+            width: calc(100% - 30px);
+            margin-left: 15px;
+            /***/ height: 80px;
+            background: url(../GZH/Image/det1.png) no-repeat;
+            background-size: 100%;
+        }
+
+        .top1 {
+            font-size: 20px;
+            color: white;
+        }
+
+        .top2 {
+            font-size: 12px;
+            color: white;
+        }
+
+        .ts {
+            font-size: 12px;
+            color: #999999;
+        }
+
+        /* 横向水平垂直居中 */
+        .h-hvc {
+            display: flex;
+            justify-content: center !important;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <!--<div class="weui-cells">
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>姓名</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_xm">张三</p>
+            </div>
+        </div>
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>性别</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_xb">男</p>
+            </div>
+        </div>
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>年龄</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_nl">20</p>
+            </div>
+        </div>
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>电话</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_dh">1515151515151</p>
+            </div>
+        </div>
+
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>医院</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_yy">唐山眼科</p>
+            </div>
+        </div>
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>日期</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_rq">2020-01-05</p>
+            </div>
+        </div>
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>采集地点</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_dd">停车场</p>
+            </div>
+        </div>
+        
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>类型</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_lx">快速</p>
+            </div>
+        </div>
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>项目</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_xmmc">核酸</p>
+            </div>
+        </div>
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>金额</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_je">100</p>
+            </div>
+        </div>
+        <div class="weui-cell" style="background: #fff">
+            <div class="weui-cell__bd">
+                <p>订单状态</p>
+            </div>
+            <div class="weui-cell__ft">
+                <p class="p2" id="p_zt">已退费</p>
+            </div>
+        </div>
+        <a href="javascript:;" class="weui-btn weui-btn_default" onclick="Refund()">退费</a>
+    </div>-->
+    <div style="height: 1em;"></div>
+    <div class="top">
+        <div style="height: 1em;"></div>
+        <div class="top1 tit_cen">电子二维码</div>
+        <div class="top2 tit_cen">核酸检测时请将二维码出示给医务人员</div>
+    </div>
+    <div style="background-color: white; width: calc(100% - 30px); margin-left: 15px; padding: 0.5em 0;">
+        <p id="p_bm" class="tit_cen" style="margin: 1em;"></p>
+        <div id="div_qrcode" class="tit_cen"></div>
+    </div>
+    <div class="h-hvc ts" style="margin-top: 1em;">
+        请关注公众号查看检测结果
+    </div>
+    <div class='demos-content-padded div_foolt' id="div_btn" style="padding: 1em;">
+        <button class="weui-btn tit_cen weui-btn_primary" id="openLocation" style="background-color: #2C63DC; top: 0px; left: 0px;">乘车路线</button>
+        <a href=" javascript:Refund()" id='show-alert' class="weui-btn weui-btn_primary" style="background-color: #2C63DC; top: 0px; left: 0px;">取消申请</a>
+    </div>
+</body>
+</html>
+<script src="../../JS/jquery-3.4.1.js"></script>
+<script src="../../JS/jquery-weui.min.js"></script>
+<script src="../../JS/Query.js?v=7"></script>
+<script src="../../JS/jquery.qrcode.min.js"></script>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+
+    let page_info = {
+        lsh: this.GetQueryString("lsh"),//登记流水号 //测试数据
+        wxdh: "",//微信订单号
+        shdh: "",//商户订单号
+        tmh: "",//条码号
+        tfsn: "",//退费 sn  判断是否为空 来标识是否已退费
+        je: ""//单据金额 单位元
+    };
+    $(function () {
+       
+        GetInfo();
+
+    });
+
+
+    /**
+     * 获取订单详细信息
+     * */
+    window.GetInfo = function () {
+        let json = {
+            "sign": "GetOrderNext",
+            "lsh": page_info.lsh
+        };
+        $.showLoading("正在加载...");
+        $.ajax({
+            url: "../../CTL/Query.ashx",
+            type: "POST",
+            data: json,
+            dataType: "json",
+            success: function (json) {
+                $.hideLoading();
+                if (json.code == "0")
+                    $.alert(json.msg);
+                else {
+                    page_info.wxdh = json.data[0]["wxdh"];
+                    page_info.shdh = json.data[0]["shdh"];
+                    page_info.je = json.data[0]["je"];
+                    page_info.tmh = json.data[0]["tmh"];
+                    page_info.tfsn = json.data[0]["tfsn"];
+                    //if (page_info.wxdh == null) {
+                    //    $.alert("单据未支付成功！"); return;
+                    //}
+                    var _lsh = padLeft(page_info.lsh,12);
+                    $("#p_bm").text("编码：" + _lsh);
+                    $("#div_qrcode").html("");
+                    $('#div_qrcode').qrcode({ width: 180, height: 180, text: _lsh });
+
+                    //此方法中有ajax 是异步的
+                    window.SetMP(json.data[0]["jdz"], json.data[0]["wdz"], json.data[0]["cjdname"], json.data[0]["address"]);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $.hideLoading();
+                alert(XMLHttpRequest.status);
+                alert(XMLHttpRequest.readyState);
+                alert(textStatus);
+            }
+        });
+    }
+
+    /**
+     * @param _Longitude 采集点经度
+     * @param _Latitude  采集点纬度
+     * @param _CjdName  采集点名称
+     * @param _Address  采集点地址
+     */
+    window.SetMP = function (_Longitude, _Latitude, _CjdName, _Address) {
+        var _url = location.href.split("#")[0];
+        $.ajax({
+            url: "../../CTL/MapHandler.ashx",
+            type: "post",
+            data: { sign: "sign", url: _url },
+            success: function (data) {
+                var datad = JSON.parse(data); //转译为Json字符串
+                wx.config({
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+                    appId: datad.appid, // 必填，公众号的唯一标识
+                    timestamp: datad.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: datad.noncestr, // 必填，生成签名的随机串
+                    signature: datad.signature, // 必填，签名，见附录1
+                    jsApiList: ["openLocation", "getLocation"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                });
+
+                wx.ready(function () {
+                    wx.checkJsApi({
+                        jsApiList: [
+                            'openLocation'
+                        ],
+                        success: function (res) {
+                            if (res.checkResult.openLocation == false) {
+                                alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                                return;
+                            }
+                        }
+                    });
+
+                    document.querySelector('#openLocation').onclick = function () {
+
+                        var Longitude = _Longitude;//"116.30489";//采集点经度 从后台取;
+                        var Latitude = _Latitude; //"40.047492";//采集点纬度 从后台取;
+                        $.ajax({
+                            url: "../../CTL/MapHandler.ashx",
+                            type: "post",
+                            data: { sign: "point2", x: Latitude, y: Longitude },
+                            success: function (data) {
+                                var result = JSON.parse(data);
+                                Longitude = result.locations[0].lng;
+                                Latitude = result.locations[0].lat;
+
+                                wx.openLocation({
+                                    latitude: Latitude,
+                                    longitude: Longitude,
+                                    name: _CjdName,//采集点名称 '北京天鹏恒宇'
+                                    address: _Address,// '北京市海淀区上地软件园57号科技大楼7号楼',//采集点地址
+                                    scale: 28,
+                                    infoUrl: 'http://weixin.qq.com',
+                                    success: function () {
+                                    }
+                                });
+                            }
+                        });
+                    };
+                });
+
+                wx.error(function (res) {
+                    alert(res.errMsg);
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.status);
+                alert(XMLHttpRequest.readyState);
+                alert(textStatus);
+            }
+        });
+    }
+
+    window.Refund = function () {
+        if (page_info.tmh != null) {
+            $.toast("已采集，不可以退费", 1500); return;
+        } else if (page_info.wxdh == "") {
+            $.toast("请稍后", 1500); return;
+        } else if (page_info.wxdh == null || page_info.shdh == null) {
+            $.toast("单据未支付成功，不需退费", 1500); return;
+        } else if (page_info.tfsn != null) {
+            $.toast("已退费，不可重复操作", 1500); return;
+        }
+        let json = {
+            "sign": "Refund",
+            "wxdh": page_info.wxdh,
+            "shdh": page_info.shdh,
+            "je": page_info.je,
+            "lsh": page_info.lsh
+        };
+        $.showLoading("正在加载...");
+        $.ajax({
+            url: "../../CTL/Query.ashx",
+            type: "POST",
+            data: json,
+            dataType: "json",
+            success: function (json) {
+                $.hideLoading();
+                if (json.code == "0")
+                    $.alert(json.msg);
+                else {
+                    $.alert("退费成功！", function () {
+                        GetInfo();
+                    });
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $.hideLoading();
+                alert(XMLHttpRequest.status);
+                alert(XMLHttpRequest.readyState);
+                alert(textStatus);
+            }
+        });
+    }
+</script>

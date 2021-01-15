@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8A43B3C5-8390-4409-8045-359E5EB88204}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HeSuanInput</RootNamespace>
+    <AssemblyName>HeSuanInput</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44347</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Controller\bin\Debug\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CSS\weui-icon.less" />
+    <Content Include="CTL\UserBind.ashx" />
+    <Content Include="JS\layui\font\iconfont.eot" />
+    <Content Include="JS\layui\font\iconfont.ttf" />
+    <Content Include="JS\layui\font\iconfont.woff" />
+    <Content Include="JS\layui\font\iconfont.woff2" />
+    <Content Include="CTL\Upload.ashx" />
+    <Content Include="CTL\Query.ashx" />
+    <Content Include="CTL\Manager.ashx" />
+    <Content Include="CTL\HSLive.ashx" />
+    <Content Include="JS\Query.js" />
+    <Content Include="UI\GZH\Image\app1.png" />
+    <Content Include="UI\GZH\Image\app2.png" />
+    <Content Include="UI\GZH\Image\app3.png" />
+    <Content Include="UI\GZH\Image\app4.png" />
+    <Content Include="UI\GZH\Image\app5.png" />
+    <Content Include="UI\GZH\Image\app6.png" />
+    <Content Include="UI\GZH\Image\bj.png" />
+    <Content Include="UI\GZH\Image\cre1.png" />
+    <Content Include="UI\GZH\Image\det1.png" />
+    <Content Include="UI\GZH\Image\map1.png" />
+    <Content Include="UI\GZH\Image\map2.png" />
+    <Content Include="UI\Query\Img\无数据.png" />
+    <Content Include="UI\Query\Img\阳性.png" />
+    <Content Include="UI\Query\Img\阴性.png" />
+    <Content Include="WeChatCallback.aspx" />
+    <Content Include="CTL\MapHandler.ashx" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml" />
+    <Content Include="UI\GZH\Action\InfoCreate.ashx" />
+    <Content Include="UI\GZH\Action\Ocr.ashx" />
+    <Content Include="UI\GZH\Action\Map.ashx" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CSS\CustomIconCSS.css" />
+    <Content Include="CSS\jquery-confirm.css" />
+    <Content Include="CSS\jquery-weui.css" />
+    <Content Include="CSS\weui.css" />
+    <Content Include="CSS\weui.min.css" />
+    <Content Include="CSS\weuix.css" />
+    <Content Include="JS\AjaxTools.js" />
+    <Content Include="JS\jquery-3.4.1.js" />
+    <Content Include="JS\jquery-barcode.min.js" />
+    <Content Include="JS\jquery-confirm.js" />
+    <Content Include="JS\jquery-weui.min.js" />
+    <Content Include="JS\jquery.code.js" />
+    <Content Include="JS\jquery.qrcode.min.js" />
+    <Content Include="JS\jweixin-1.6.0.js" />
+    <Content Include="JS\layui\css\layui.css" />
+    <Content Include="JS\layui\css\layui.mobile.css" />
+    <Content Include="JS\layui\css\modules\code.css" />
+    <Content Include="JS\layui\css\modules\laydate\default\laydate.css" />
+    <Content Include="JS\layui\css\modules\layer\default\icon-ext.png" />
+    <Content Include="JS\layui\css\modules\layer\default\icon.png" />
+    <Content Include="JS\layui\css\modules\layer\default\layer.css" />
+    <Content Include="JS\layui\css\modules\layer\default\loading-0.gif" />
+    <Content Include="JS\layui\css\modules\layer\default\loading-1.gif" />
+    <Content Include="JS\layui\css\modules\layer\default\loading-2.gif" />
+    <Content Include="JS\layui\font\iconfont.svg" />
+    <Content Include="JS\layui\images\face\0.gif" />
+    <Content Include="JS\layui\images\face\1.gif" />
+    <Content Include="JS\layui\images\face\10.gif" />
+    <Content Include="JS\layui\images\face\11.gif" />
+    <Content Include="JS\layui\images\face\12.gif" />
+    <Content Include="JS\layui\images\face\13.gif" />
+    <Content Include="JS\layui\images\face\14.gif" />
+    <Content Include="JS\layui\images\face\15.gif" />
+    <Content Include="JS\layui\images\face\16.gif" />
+    <Content Include="JS\layui\images\face\17.gif" />
+    <Content Include="JS\layui\images\face\18.gif" />
+    <Content Include="JS\layui\images\face\19.gif" />
+    <Content Include="JS\layui\images\face\2.gif" />
+    <Content Include="JS\layui\images\face\20.gif" />
+    <Content Include="JS\layui\images\face\21.gif" />
+    <Content Include="JS\layui\images\face\22.gif" />
+    <Content Include="JS\layui\images\face\23.gif" />
+    <Content Include="JS\layui\images\face\24.gif" />
+    <Content Include="JS\layui\images\face\25.gif" />
+    <Content Include="JS\layui\images\face\26.gif" />
+    <Content Include="JS\layui\images\face\27.gif" />
+    <Content Include="JS\layui\images\face\28.gif" />
+    <Content Include="JS\layui\images\face\29.gif" />
+    <Content Include="JS\layui\images\face\3.gif" />
+    <Content Include="JS\layui\images\face\30.gif" />
+    <Content Include="JS\layui\images\face\31.gif" />
+    <Content Include="JS\layui\images\face\32.gif" />
+    <Content Include="JS\layui\images\face\33.gif" />
+    <Content Include="JS\layui\images\face\34.gif" />
+    <Content Include="JS\layui\images\face\35.gif" />
+    <Content Include="JS\layui\images\face\36.gif" />
+    <Content Include="JS\layui\images\face\37.gif" />
+    <Content Include="JS\layui\images\face\38.gif" />
+    <Content Include="JS\layui\images\face\39.gif" />
+    <Content Include="JS\layui\images\face\4.gif" />
+    <Content Include="JS\layui\images\face\40.gif" />
+    <Content Include="JS\layui\images\face\41.gif" />
+    <Content Include="JS\layui\images\face\42.gif" />
+    <Content Include="JS\layui\images\face\43.gif" />
+    <Content Include="JS\layui\images\face\44.gif" />
+    <Content Include="JS\layui\images\face\45.gif" />
+    <Content Include="JS\layui\images\face\46.gif" />
+    <Content Include="JS\layui\images\face\47.gif" />
+    <Content Include="JS\layui\images\face\48.gif" />
+    <Content Include="JS\layui\images\face\49.gif" />
+    <Content Include="JS\layui\images\face\5.gif" />
+    <Content Include="JS\layui\images\face\50.gif" />
+    <Content Include="JS\layui\images\face\51.gif" />
+    <Content Include="JS\layui\images\face\52.gif" />
+    <Content Include="JS\layui\images\face\53.gif" />
+    <Content Include="JS\layui\images\face\54.gif" />
+    <Content Include="JS\layui\images\face\55.gif" />
+    <Content Include="JS\layui\images\face\56.gif" />
+    <Content Include="JS\layui\images\face\57.gif" />
+    <Content Include="JS\layui\images\face\58.gif" />
+    <Content Include="JS\layui\images\face\59.gif" />
+    <Content Include="JS\layui\images\face\6.gif" />
+    <Content Include="JS\layui\images\face\60.gif" />
+    <Content Include="JS\layui\images\face\61.gif" />
+    <Content Include="JS\layui\images\face\62.gif" />
+    <Content Include="JS\layui\images\face\63.gif" />
+    <Content Include="JS\layui\images\face\64.gif" />
+    <Content Include="JS\layui\images\face\65.gif" />
+    <Content Include="JS\layui\images\face\66.gif" />
+    <Content Include="JS\layui\images\face\67.gif" />
+    <Content Include="JS\layui\images\face\68.gif" />
+    <Content Include="JS\layui\images\face\69.gif" />
+    <Content Include="JS\layui\images\face\7.gif" />
+    <Content Include="JS\layui\images\face\70.gif" />
+    <Content Include="JS\layui\images\face\71.gif" />
+    <Content Include="JS\layui\images\face\8.gif" />
+    <Content Include="JS\layui\images\face\9.gif" />
+    <Content Include="JS\layui\layui.all.js" />
+    <Content Include="JS\layui\layui.js" />
+    <Content Include="JS\layui\lay\modules\carousel.js" />
+    <Content Include="JS\layui\lay\modules\code.js" />
+    <Content Include="JS\layui\lay\modules\colorpicker.js" />
+    <Content Include="JS\layui\lay\modules\element.js" />
+    <Content Include="JS\layui\lay\modules\flow.js" />
+    <Content Include="JS\layui\lay\modules\form.js" />
+    <Content Include="JS\layui\lay\modules\jquery.js" />
+    <Content Include="JS\layui\lay\modules\laydate.js" />
+    <Content Include="JS\layui\lay\modules\layedit.js" />
+    <Content Include="JS\layui\lay\modules\layer.js" />
+    <Content Include="JS\layui\lay\modules\laypage.js" />
+    <Content Include="JS\layui\lay\modules\laytpl.js" />
+    <Content Include="JS\layui\lay\modules\mobile.js" />
+    <Content Include="JS\layui\lay\modules\rate.js" />
+    <Content Include="JS\layui\lay\modules\slider.js" />
+    <Content Include="JS\layui\lay\modules\table.js" />
+    <Content Include="JS\layui\lay\modules\transfer.js" />
+    <Content Include="JS\layui\lay\modules\tree.js" />
+    <Content Include="JS\layui\lay\modules\upload.js" />
+    <Content Include="JS\layui\lay\modules\util.js" />
+    <Content Include="JS\lockandkey.js" />
+    <Content Include="JS\setting.js" />
+    <Content Include="JS\socket.io.js" />
+    <Content Include="JS\swiper.min.js" />
+    <Content Include="JS\swiper\swiper.min.css" />
+    <Content Include="JS\swiper\swiper.min.js" />
+    <Content Include="JS\Tools.js" />
+    <Content Include="JS\vue.min.js" />
+    <Content Include="JS\weui.js" />
+    <Content Include="JS\wx-pay.js" />
+    <Content Include="JS\zepto.min.js" />
+    <Content Include="UI\BarCode.html" />
+    <Content Include="UI\GZH\Css\Appointment.css" />
+    <Content Include="UI\GZH\Css\common.css" />
+    <Content Include="UI\GZH\Css\icon.css" />
+    <Content Include="UI\GZH\Css\InfoCreate.css" />
+    <Content Include="UI\GZH\Css\InfoDetails.css" />
+    <Content Include="UI\GZH\Css\InfoVerify.css" />
+    <Content Include="UI\GZH\Css\Map.css" />
+    <Content Include="UI\GZH\Js\common.js" />
+    <Content Include="UI\GZH\Js\jquery1.8.3.min.js" />
+    <Content Include="UI\GZH\Js\vue.min.js" />
+    <Content Include="UI\GZH\View\Appointment.html" />
+    <Content Include="UI\GZH\View\InfoCreate.html" />
+    <Content Include="UI\GZH\View\InfoDetails.html" />
+    <Content Include="UI\GZH\View\InfoVerify.html" />
+    <Content Include="UI\GZH\View\Map.html" />
+    <Content Include="UI\HsAppointment.html" />
+    <Content Include="UI\Payment.html" />
+    <Content Include="UI\QRCode.html" />
+    <Content Include="UI\Query\MyOrderM.html" />
+    <Content Include="UI\Query\MyOrderN.html" />
+    <Content Include="UI\Query\MyReport.html" />
+    <Content Include="UI\ResultQuery.html" />
+    <Content Include="UI\Statistics.html" />
+    <Content Include="UI\TestHSLive.html" />
+    <Content Include="UI\TestManager.html" />
+    <Content Include="UI\UserBind.html" />
+    <Content Include="UI\UserInfo.html" />
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CTL\HSLive.ashx.cs">
+      <DependentUpon>HSLive.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="CTL\Manager.ashx.cs">
+      <DependentUpon>Manager.ashx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="CTL\MapHandler.ashx.cs">
+      <DependentUpon>MapHandler.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="CTL\Query.ashx.cs">
+      <DependentUpon>Query.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="CTL\Upload.ashx.cs">
+      <DependentUpon>Upload.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="CTL\UserBind.ashx.cs">
+      <DependentUpon>UserBind.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\GZH\Action\InfoCreate.ashx.cs">
+      <DependentUpon>InfoCreate.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GZH\Action\Map.ashx.cs">
+      <DependentUpon>Map.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\GZH\Action\Ocr.ashx.cs">
+      <DependentUpon>Ocr.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="WeChatCallback.aspx.cs">
+      <DependentUpon>WeChatCallback.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WeChatCallback.aspx.designer.cs">
+      <DependentUpon>WeChatCallback.aspx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Controller\Controller.csproj">
+      <Project>{ad429453-cd14-4c11-9aa8-1d7f93391a63}</Project>
+      <Name>Controller</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{41f3b383-3b6d-46d9-b50e-b2906aa28a69}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>50307</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44347/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>https://localhost:44347/</IISAppRootUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>https://www.tssykyy.com</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>电子二维码</title>
+    <link href="../../../CSS/weui.css" rel="stylesheet" />
+    <link href="../Css/common.css" rel="stylesheet" />
+    <link href="../Css/InfoDetails.css" rel="stylesheet" />
+    <link href="../Css/icon.css" rel="stylesheet" />
+    <script src="../Js/jquery1.8.3.min.js"></script>
+    <script src="../../../JS/jquery.qrcode.min.js"></script>
+    <script src="../Js/common.js"></script>
+    <script src="../../../JS/weui.js"></script>
+    <script src="../Js/vue.min.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div style="width: 100%; height:10px;"></div>
+        <div v-if="isTsShow" :class="isPay?'payyes h-hvc mt-m':'payno h-hvc'">{{isPay?'支付成功':'支付失败'}}</div>
+        <div class="top mt-m v-vhc">
+            <div class="top1">电子二维码</div>
+            <div class="top2">核酸检测时请将二维码出示给医务人员</div>
+        </div>
+        <div class="con v-vhc">
+            <div class="mt-m">编码：{{bh}}</div>
+            <div id="qrcode"></div>
+        </div>
+        <div class="ts h-hvc mt-s">请关注公众号查看检测结果，下载报告</div>
+
+        <div class="btn h-hvc mt-m" id="openLocation">查看乘车路线</div>
+    </div>
+</body>
+</html>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            lsh: '',
+            bh: '',
+            isTsShow:false,
+            isPay: false
+        },
+        created() {
+            this.lsh = sessionStorage.getItem('lsh')
+            this.bh = this.sub(this.lsh)
+            this.getIsPay()
+        },
+        mounted() {
+            str = encodeURI(this.bh);
+            $('#qrcode').qrcode({ width: 180, height: 180, text: str, correctLevel: 1 });
+        },
+        methods: {
+            sub(str) {
+                switch (str.length) {
+                    case 1: return '00000000000' + str; break;
+                    case 2: return '0000000000' + str; break;
+                    case 3: return '000000000' + str; break;
+                    case 4: return '00000000' + str; break;
+                    case 5: return '0000000' + str; break;
+                    case 6: return '000000' + str; break;
+                    case 7: return '00000' + str; break;
+                    case 8: return '0000' + str; break;
+                    case 9: return '000' + str; break;
+                    case 10: return '00' + str; break;
+                    case 11: return '0' + str; break;
+                    case 12: return str; break;
+                }
+            },
+            getIsPay() {
+                let that = this
+                let url = '../Action/InfoCreate.ashx'
+                let data = {
+                    'operate': 'GetIsPay',
+                    "lsh": this.lsh
+                }
+                ajax(url, data).then(res => {
+                    if (res.IsSuccess) {
+                        that.isTsShow = true
+                        if (res.Data.length > 0) {
+                            that.isPay = true
+                        }
+                        else {
+                            that.isPay = false
+                        }
+                    }
+                    else
+                        weui.alert(res.Data);
+                })
+            }
+        }
+    })
+    dh()
+    function dh() {
+        let jccInfo = JSON.parse(sessionStorage.getItem('yyInfo'))
+        let _Longitude = jccInfo.WE_VALUE
+        let _Latitude = jccInfo.NS_VALUE
+        let _CjdName = jccInfo.CJDMC
+        let _Address = jccInfo.POSITION
+        var _url = location.href.split("#")[0];
+        $.ajax({
+            url: "../Action/Map.ashx",
+            type: "post",
+            data: { sign: "sign", url: _url },
+            success: function (data) {
+                var datad = JSON.parse(data); //转译为Json字符串
+                wx.config({
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+                    appId: datad.appid, // 必填，公众号的唯一标识
+                    timestamp: datad.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: datad.noncestr, // 必填，生成签名的随机串
+                    signature: datad.signature, // 必填，签名，见附录1
+                    jsApiList: ["openLocation", "getLocation"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                });
+
+                wx.ready(function () {
+                    wx.checkJsApi({
+                        jsApiList: [
+                            'openLocation'
+                        ],
+                        success: function (res) {
+                            if (res.checkResult.openLocation == false) {
+                                weui.alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                                return;
+                            }
+                        }
+                    });
+
+                    document.querySelector('#openLocation').onclick = function () {
+
+                        var Longitude = _Longitude;//"116.30489";//采集点经度 从后台取;
+                        var Latitude = _Latitude; //"40.047492";//采集点纬度 从后台取;
+                        $.ajax({
+                            url: "../Action/Map.ashx",
+                            type: "post",
+                            data: { sign: "point2", x: Latitude, y: Longitude },
+                            success: function (data) {
+                                var result = JSON.parse(data);
+                                Longitude = result.locations[0].lng;
+                                Latitude = result.locations[0].lat;
+
+                                wx.openLocation({
+                                    latitude: Latitude,
+                                    longitude: Longitude,
+                                    name: _CjdName,//采集点名称 '北京天鹏恒宇'
+                                    address: _Address,// '北京市海淀区上地软件园57号科技大楼7号楼',//采集点地址
+                                    scale: 28,
+                                    infoUrl: 'http://weixin.qq.com',
+                                    success: function () {
+                                    }
+                                });
+                            }
+                        });
+                    };
+                });
+
+                wx.error(function (res) {
+                    weui.alert(res.errMsg);
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                weui.alert(XMLHttpRequest.status);
+                weui.alert(XMLHttpRequest.readyState);
+                weui.alert(textStatus);
+            }
+        });
+    }
+</script>

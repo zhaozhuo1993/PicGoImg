@@ -1,0 +1,497 @@
+﻿html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+#app{
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+}
+
+
+/* ==================
+        flex布局样式
+ ==================== */
+
+/* 水平 */
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+/* 垂直 */
+.col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 横向水平居中 */
+.h-hc {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+/* 横向垂直居中 */
+.h-vc {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+/* 横向水平垂直居中 */
+.h-hvc {
+    display: flex;
+    justify-content: center !important;
+    align-items: center;
+}
+
+/* 纵向水平居中 */
+.v-hc {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 纵向垂直居中 */
+.v-vc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* 纵向垂直水平居中 */
+.v-vhc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 左对齐 */
+.f_l {
+    justify-content: flex-start;
+}
+
+/* 右对齐 */
+.f_r {
+    justify-content: flex-end;
+}
+
+/* 上对齐 */
+.f_t {
+    align-items: flex-start;
+}
+
+/* 下对齐 */
+.f_b {
+    align-items: flex-end;
+}
+
+/* 均分对齐 */
+.f_sa {
+    justify-content: space-around;
+}
+
+/* 边界对齐 */
+.f_sb {
+    justify-content: space-between;
+}
+
+/* 水平换行 */
+.wrap {
+    flex-wrap: wrap;
+}
+
+/* 适配剩余高度 */
+.fitRestH {
+    flex-grow: 1;
+    height: 0;
+}
+
+.fitRestW {
+    flex-grow: 1;
+    width: 0;
+}
+
+.fitRest {
+    flex-grow: 1;
+}
+
+/* 水平垂直居中 */
+.absoluteAuto {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+}
+
+/* 固定 */
+.fixed {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    /* background: #ffffff; */
+    width: 100% !important;
+}
+
+
+
+/* ==================
+        常用样式
+ ==================== */
+
+/* 透明度 */
+.opa0 {
+    opacity: 0
+}
+
+.opa1 {
+    opacity: 1
+}
+
+.fontB {
+    font-family: Source Han Sans SC;
+    font-weight: 150;
+    color: rgba(9, 15, 28, 1);
+}
+
+/* 上下边框 */
+.udBorder {
+    border-bottom: rgba(247, 245, 245, 0.6) solid 1px;
+    border-top: rgba(247, 245, 245, 0.6) solid 1px;
+}
+
+/* 下边框down */
+.dBorder {
+    border-bottom: rgba(247, 245, 245, 0.6) solid 1px !important;
+}
+
+/* 上边框up */
+.uBorder {
+    border-top: rgba(247, 245, 245, 0.6) solid 1px;
+}
+
+/* 超出部分出省略号 */
+.text-overflow {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-break: break-all;
+}
+
+/* 多行文本超出部分省略号 */
+.ellipsis-line {
+    display: -webkit-box;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    box-orient: vertical;
+    -webkit-box-orient: vertical;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    word-break: break-all;
+}
+
+/* 白底灰字*/
+.bg-white {
+    background-color: var(--white);
+    color: var(--darkGray);
+}
+
+/* 浅灰背景色 */
+.bg-qh {
+    background-color: #fdfbfb;
+}
+
+/* 适应内容高度 */
+.fitH {
+    height: fit-content !important;
+}
+
+.fitW {
+    width: fit-content !important;
+}
+
+
+
+
+/* ==================
+      快速添加边距
+ ==================== */
+
+
+
+/* 外边距 */
+.mt-auto {
+    margin-top: auto !important;
+}
+
+.mb-auto {
+    margin-bottom: auto !important;
+}
+
+.mr-auto {
+    margin-right: auto !important;
+}
+
+.ml-auto {
+    margin-left: auto !important;
+}
+
+.mt-s {
+    margin-top: 5px;
+}
+
+.mt-m {
+    margin-top: 10px;
+}
+
+.mt-l {
+    margin-top: 15px;
+}
+
+.mt-xl {
+    margin-top: 20px;
+}
+
+.mb-s {
+    margin-bottom: 5px;
+}
+
+.mb-m {
+    margin-bottom: 10px;
+}
+
+.mb-l {
+    margin-bottom: 15px;
+}
+
+.mb-xl {
+    margin-bottom: 20px !important;
+}
+
+.ml-s {
+    margin-left: 5px;
+}
+
+.ml-m {
+    margin-left: 10px;
+}
+
+.ml-l {
+    margin-left: 15px;
+}
+
+.ml-xl {
+    margin-left: 20px;
+}
+
+.mr-s {
+    margin-right: 5px;
+}
+
+.mr-m {
+    margin-right: 10px;
+}
+
+.mr-l {
+    margin-right: 15px;
+}
+
+.mr-xl {
+    margin-right: 20px;
+}
+
+.mlr-s {
+    margin: 0 5px;
+}
+
+.mlr-l {
+    margin: 0 15px;
+}
+
+.mlr-xl {
+    margin: 0 20px;
+}
+
+.mlr-m {
+    margin: 0 10px;
+}
+
+.mud-s {
+    margin: 5px 0;
+}
+
+.mud-m {
+    margin: 10px 0;
+}
+
+.mud-l {
+    margin: 15px 0;
+}
+
+.mud-xl {
+    margin: 20px 0;
+}
+
+.m-s {
+    margin: 5px;
+}
+
+.m-m {
+    margin: 10px;
+}
+
+.m-l {
+    margin: 15px;
+}
+
+.m-xl {
+    margin: 20px;
+}
+
+/* 内边距 */
+.pt-auto {
+    padding-top: auto !important;
+}
+
+.pb-auto {
+    padding-bottom: auto !important;
+}
+
+.pr-auto {
+    padding-right: auto !important;
+}
+
+.pl-auto {
+    padding-left: auto !important;
+}
+
+.pt-s {
+    padding-top: 5px;
+}
+
+.pt-m {
+    padding-top: 10px;
+}
+
+.pt-l {
+    padding-top: 15px;
+}
+
+.pt-xl {
+    padding-top: 20px;
+}
+
+.pb-s {
+    padding-bottom: 5px;
+}
+
+.pb-m {
+    padding-bottom: 10px;
+}
+
+.pb-l {
+    padding-bottom: 15px;
+}
+
+.pb-xl {
+    padding-bottom: 20px;
+}
+
+.pl-s {
+    padding-left: 5px;
+}
+
+.pl-m {
+    padding-left: 10px;
+}
+
+.pl-l {
+    padding-left: 15px;
+}
+
+.pl-xl {
+    padding-left: 20px;
+}
+
+.pr-s {
+    padding-right: 5px;
+}
+
+.pr-m {
+    padding-right: 10px;
+}
+
+.pr-l {
+    padding-right: 15px;
+}
+
+.pr-xl {
+    padding-right: 20px;
+}
+
+.plr-s {
+    padding: 0 5px;
+}
+
+.plr-l {
+    padding: 0 15px;
+}
+
+.plr-xl {
+    padding: 0 20px;
+}
+
+.plr-m {
+    padding: 0 10px;
+}
+
+.pud-s {
+    padding: 5px 0;
+}
+
+.pud-m {
+    padding: 10px 0;
+}
+
+.pud-l {
+    padding: 15px 0;
+}
+
+.pud-xl {
+    padding: 20px 0;
+}
+
+.p-s {
+    padding: 5px;
+}
+
+.p-m {
+    padding: 10px;
+}
+
+.p-l {
+    padding: 15px;
+}
+
+.p-xl {
+    padding: 20px;
+}
+
+.bar {
+    display: flex;
+    position: relative;
+    align-items: center;
+    min-height: 40px;
+    flex: 0 0 40px;
+    max-width: 100%;
+}

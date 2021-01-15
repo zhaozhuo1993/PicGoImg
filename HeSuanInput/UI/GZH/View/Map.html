@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <link href="../../../CSS/weui.css" rel="stylesheet" />
+    <link href="../Css/common.css" rel="stylesheet" />
+    <link href="../Css/Map.css" rel="stylesheet" />
+    <script src="../Js/jquery1.8.3.min.js"></script>
+    <script src="../Js/common.js"></script>
+    <script src="../../../JS/weui.js"></script>
+    <script src="../Js/vue.min.js"></script>
+    <script src="//api.map.baidu.com/api?type=webgl&v=1.0&ak=C4cd2a8c0a40885f9ab67bcd56d7b7c9"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+</head>
+<body>
+    <div id="app" style="height: 100%; padding: 0;">
+        <div id="container"></div>
+        <div class="con">
+            <div class="title">核酸检测机构</div>
+            <div class="item mt-s">
+                <div v-for="(item,index) in jccList" class="row h-vc item-div" @click="lableClick(item)">
+                    <div class="h-hvc">
+                        <img class="hosimg" src="../Image/map1.png" />
+                    </div>
+                    <div class="ml-m item-con v-vc">
+                        <div class="row item-top h-vc">
+                            {{item.CJDMC}}({{item.NAME}})
+                            <span class="zj h-hvc ml-m" v-if="index == 0">最近</span>
+                        </div>
+                        <div class="row f_sb item-mid">
+                            <div>¥{{item.MONEYSTR}}/人</div>
+                            <div class="jldiv h-vc ml-m">
+                                <div class="ml-s" style="font-size: 12px;">{{item.jl||'0'}}km</div>
+                                <img style="width: 10px;" src="../Image/map2.png" />
+                            </div>
+                        </div>
+                        <div class="item-bot">
+                            {{item.POSITION}}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            Latitude: null,//经度
+            Longitude: null,//经度
+            url: '',
+            code: '',
+            yyid: '',
+            qd: '',
+            type: '',
+            jccList: []
+        },
+        created() {
+            this.type = getQueryString("type");
+            if (this.type == 'sm') {
+                sessionStorage.setItem('ly', 0)
+                this.yyid = getQueryString("yyid");
+                this.qd = getQueryString("qd");
+                this.getHosInfo()
+            }
+            else if (this.type == 'gzh') {
+                sessionStorage.setItem('ly', 1)
+                if (!sessionStorage.getItem('openid')) {
+                    this.code = getQueryString("code");
+                    this.getOpenId()
+                }
+                this.getHosInfo()
+            }
+            else {
+                weui.dialog({
+                    title: '提示',
+                    content: '检测不到有参数，请联系管理人员',
+                    className: 'custom-classname',
+                    buttons: []
+                })
+            }
+        },
+        methods: {
+            getWxConfig() {
+                let that = this
+                $.ajax({
+                    url: "../Action/Map.ashx",
+                    type: "post",
+                    data: { sign: "sign", url: location.href.split("#")[0] },
+                    success: function (data) {
+                        var datad = JSON.parse(data); //转译为Json字符串
+                        wx.config({
+                            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+                            appId: datad.appid, // 必填，公众号的唯一标识
+                            timestamp: datad.timestamp, // 必填，生成签名的时间戳
+                            nonceStr: datad.noncestr, // 必填，生成签名的随机串
+                            signature: datad.signature, // 必填，签名，见附录1
+                            jsApiList: ["openLocation", "getLocation"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                        });
+
+                        wx.ready(function () {
+                            wx.checkJsApi({
+                                jsApiList: [
+                                    'getLocation'
+                                ],
+                                success: function (res) {
+                                    if (res.checkResult.getLocation == false) {
+                                        weui.alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                                        return;
+                                    }
+                                }
+                            });
+
+                            wx.getLocation({
+                                success: function (res) {
+                                    that.Longitude = res.longitude;
+                                    that.Latitude = res.latitude;
+                                    $.ajax({
+                                        url: "../Action/Map.ashx",
+                                        type: "post",
+                                        data: { sign: "point", x: that.Longitude, y: that.Latitude },
+                                        success: function (data) {
+                                            var result = JSON.parse(data);
+                                            that.Longitude = result.result[0].x;
+                                            that.Latitude = result.result[0].y;
+
+                                            var map = new BMapGL.Map('container');
+                                            map.centerAndZoom(new BMapGL.Point(that.Longitude, that.Latitude), 17);
+                                            map.enableScrollWheelZoom(true);
+
+
+                                            that.jccList.forEach(item => {
+                                                item.jl = that.getDistance(item.NS_VALUE, item.WE_VALUE, that.Latitude, that.Longitude)
+                                                // 创建大头针图标
+                                                var myIcon = new BMapGL.Icon("../Image/bj.png", new BMapGL.Size(40, 50));
+                                                var pt = new BMapGL.Point(item.WE_VALUE, item.NS_VALUE);
+                                                var marker = new BMapGL.Marker(pt, {
+                                                    icon: myIcon
+                                                });
+                                                // 将标注添加到地图
+                                                map.addOverlay(marker);
+                                            })
+
+                                            that.jccList.sort(that.sortJl)
+
+                                            var myGeo = new BMapGL.Geocoder();
+                                            // 根据坐标得到地址描述
+                                            myGeo.getLocation(new BMapGL.Point(that.Longitude, that.Latitude), function (result) {
+                                                if (result) {
+                                                    document.title = "当前位置：" + result.address;
+                                                }
+                                            });
+                                        }
+                                    });
+                                },
+                                cancel: function (res) {
+                                    weui.alert('用户拒绝授权获取地理位置');
+                                }
+                            });
+                        });
+                        wx.error(function (res) {
+                            console.log(res);
+                        });
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        weui.alert(XMLHttpRequest.status);
+                        weui.alert(XMLHttpRequest.readyState);
+                        weui.alert(textStatus);
+                    }
+                });
+            },
+            sortJl(a, b) {
+                return a.jl - b.jl
+            },
+            //经纬度计算距离
+            getRad(d) {
+                return d * Math.PI / 180.0;//经纬度转换成三角函数中度分表形式。
+            },
+            getDistance(lat1, lng1, lat2, lng2) {
+                var radLat1 = this.getRad(lat1);
+                var radLat2 = this.getRad(lat2);
+                var a = radLat1 - radLat2;
+                var b = this.getRad(lng1) - this.getRad(lng2);
+                var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+                    Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+                s = s * 6378.137;// EARTH_RADIUS;
+                s = Math.round(s * 10000) / 10000; //输出为公里
+                s=s.toFixed(2);
+                return s;
+            },
+            getOpenId() {
+                let url = '../Action/InfoCreate.ashx'
+                let data = {
+                    'operate': 'GetOpenId',
+                    "code": this.code
+                }
+                ajax(url, data).then(res => {
+                    if (res.IsSuccess) {
+                        sessionStorage.setItem('openid', res.Data)
+                    }
+                    else
+                        weui.alert(res.Data);
+                })
+            },
+            getHosInfo() {
+                let that = this
+                loading = weui.loading("加载中...");
+                let url = '../Action/InfoCreate.ashx'
+                let data = {
+                    'operate': 'GetHosInfo'
+                }
+                ajax(url, data).then(res => {
+                    loading.hide()
+                    if (res.IsSuccess) {
+                        that.jccList = res.Data
+                        if (that.type == 'gzh')
+                            that.getWxConfig()
+                    }
+                    else
+                        weui.alert(res.Data);
+                })
+            },
+            lableClick(item) {
+                sessionStorage.setItem('yyInfo', JSON.stringify(item))
+                location.href = './Appointment.html'
+            }
+        }
+    })
+</script>

@@ -1,0 +1,205 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <meta name="format-detection" content="telephone=yes">
+    <title>核酸申请</title>
+    <link href="../../../CSS/weui.css" rel="stylesheet" />
+    <link href="../Css/common.css" rel="stylesheet" />
+    <link href="../Css/Appointment.css" rel="stylesheet" />
+    <script src="../Js/jquery1.8.3.min.js"></script>
+    <script src="../Js/common.js"></script>
+    <script src="../../../JS/weui.js"></script>
+    <script src="../Js/vue.min.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+</head>
+<body>
+    <div id="app" style="background-color: white">
+        <div class="top h-hvc">
+            <img src="../Image/app1.png" />
+        </div>
+        <div class="mid v-vc">
+            <div class="nn">{{jccInfo.CJDMC}}({{jccInfo.NAME}})</div>
+            <div class="row f_sb mt-s">
+                <div class="row h-vc">
+                    <img class="top-img1" src="../Image/app2.png" />
+                    <span class="ml-m mm ">{{jccInfo.POSITION}}</span>
+                </div>
+                <div class="row h-vc">
+                    <img class="top-img2 ml-l" src="../Image/app3.png" id="openLocation"/>
+                    <img class="top-img2 ml-l" src="../Image/app4.png" @click="phoneClick" />
+                </div>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="bot">
+            <div class="title h-vc">核酸检测项目</div>
+            <div class="h-vc item" v-for="item in xmlxList">
+                <div class="bot-left">
+                    <img class="bot-img" :src="item.TYPE == 0?'../Image/app5.png':'../Image/app6.png'" />
+                </div>
+                <div class="row bot-right ml-l f_sb" @click="checkboxClick(item)">
+                    <div>
+                        <div class="pp">{{item.ITEM_NAME}}</div>
+                        <div class="je mt-s">¥{{item.ITEM_MONEY}}/人</div>
+                    </div>
+                    <div class="h-vc">
+                        <div class="weui-cells_checkbox" v-show="item.check">
+                            <input type="checkbox" class="weui-check" name="users" checked>
+                            <i class="weui-icon-checked"></i>
+                        </div>
+                        <div class="yq" v-show="!item.check">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn h-hvc mt-m" @click="confirm">确认</div>
+    </div>
+</body>
+</html>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            lx:'',
+            jccInfo: {},
+            xmlxList: []
+        },
+        created() {
+            this.jccInfo = JSON.parse(sessionStorage.getItem('yyInfo'))
+            this.getJcxmList()
+        },
+        methods: {
+            checkboxClick(val) {
+                this.xmlxList.forEach(item => {
+                    if (item.ITEM_CODE == val.ITEM_CODE)
+                        item.check = true
+                    else
+                        item.check = false
+                })
+            },
+            getJcxmList() {
+                let that = this
+                loading = weui.loading("加载中...");
+                let url = '../Action/InfoCreate.ashx'
+                let data = {
+                    'operate': 'GetJcxm',
+                    "yyid": this.jccInfo.CODE
+                }
+                ajax(url, data).then(res => {
+                    loading.hide()
+                    if (res.IsSuccess) {
+                        res.Data.forEach(item => {
+                            if (item.TYPE == 0)
+                                item.check = true
+                            else
+                                item.check = false
+                        })
+                        that.xmlxList = res.Data
+                    }
+                    else
+                        weui.alert(res.Data);
+                })
+            },
+            phoneClick() {
+                let yyInfo = JSON.parse(sessionStorage.getItem('yyInfo'))
+                weui.actionSheet([
+                    {
+                        label: yyInfo.PHONE,
+                        onClick: function () {
+                            
+                        }
+                    }
+                ]);
+            },
+            confirm() {
+                let xmlxInfo = this.xmlxList.filter(item => {
+                    if (item.check)
+                    return item
+                })[0]
+                sessionStorage.setItem('xmlxInfo', JSON.stringify(xmlxInfo))
+                location.href = './InfoCreate.html'
+            }
+        }
+    })
+    dh()
+    function dh() {
+        let jccInfo = JSON.parse(sessionStorage.getItem('yyInfo'))
+        let _Longitude = jccInfo.WE_VALUE
+        let _Latitude = jccInfo.NS_VALUE
+        let _CjdName = jccInfo.CJDMC
+        let _Address = jccInfo.POSITION
+        var _url = location.href.split("#")[0];
+        $.ajax({
+            url: "../Action/Map.ashx",
+            type: "post",
+            data: { sign: "sign", url: _url },
+            success: function (data) {
+                var datad = JSON.parse(data); //转译为Json字符串
+                wx.config({
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来
+                    appId: datad.appid, // 必填，公众号的唯一标识
+                    timestamp: datad.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: datad.noncestr, // 必填，生成签名的随机串
+                    signature: datad.signature, // 必填，签名，见附录1
+                    jsApiList: ["openLocation", "getLocation"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                });
+
+                wx.ready(function () {
+                    wx.checkJsApi({
+                        jsApiList: [
+                            'openLocation'
+                        ],
+                        success: function (res) {
+                            if (res.checkResult.openLocation == false) {
+                                weui.alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                                return;
+                            }
+                        }
+                    });
+
+                    document.querySelector('#openLocation').onclick = function () {
+
+                        var Longitude = _Longitude;//"116.30489";//采集点经度 从后台取;
+                        var Latitude = _Latitude; //"40.047492";//采集点纬度 从后台取;
+                        $.ajax({
+                            url: "../Action/Map.ashx",
+                            type: "post",
+                            data: { sign: "point2", x: Latitude, y: Longitude },
+                            success: function (data) {
+                                var result = JSON.parse(data);
+                                Longitude = result.locations[0].lng;
+                                Latitude = result.locations[0].lat;
+
+                                wx.openLocation({
+                                    latitude: Latitude,
+                                    longitude: Longitude,
+                                    name: _CjdName,//采集点名称 '北京天鹏恒宇'
+                                    address: _Address,// '北京市海淀区上地软件园57号科技大楼7号楼',//采集点地址
+                                    scale: 28,
+                                    infoUrl: 'http://weixin.qq.com',
+                                    success: function () {
+                                    }
+                                });
+                            }
+                        });
+                    };
+                });
+
+                wx.error(function (res) {
+                    weui.alert(res.errMsg);
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                weui.alert(XMLHttpRequest.status);
+                weui.alert(XMLHttpRequest.readyState);
+                weui.alert(textStatus);
+            }
+        });
+    }
+</script>

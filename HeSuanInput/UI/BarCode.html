@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>条形码</title>
+    <style>
+        #bcTarget {
+            margin: auto;
+            margin-top: 20px;
+        }
+
+            #bcTarget ::after {
+                padding-bottom: 20px;
+            }
+
+        .tips {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: darkslategray;
+        }
+    </style>
+</head>
+<body>
+    <div class="bcTarget_div">
+        <div id="bcTarget" style="padding-bottom: 10px"></div>
+        <p class="tips">请出示给医务人员</p>
+    </div>
+</body>
+</html>
+<script src="../JS/jquery-3.4.1.js"></script>
+<script src="../JS/jquery-barcode.min.js"></script>
+<script src="../JS/Tools.js"></script>
+<script>
+    let id = t_request("id");
+    function CreateBarcode(code) {//ean13 code128
+        $("#bcTarget").barcode(code, "code128", {
+            output: 'css',       //渲染方式 css/bmp/svg/canvas
+            //bgColor: '#ff0000', //条码背景颜色
+            color: '#000000',   //条码颜色
+            barWidth: 2,        //单条条码宽度
+            barHeight: 70,     //单体条码高度
+            fontSize: 14,   //条码字体大小
+            marginHRI: 80,  //条码字体距条码中心的高度
+            // moduleSize: 5,   //条码大小
+            // posX: 10,        //条码坐标X
+            // posY: 5,         //条码坐标Y
+            addQuietZone: false  //是否添加空白区（内边距）
+        });
+    }
+    CreateBarcode(id);
+</script>

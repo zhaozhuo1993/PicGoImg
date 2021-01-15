@@ -1,0 +1,623 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>核酸集采统计</title>
+    <link href="../JS/layui/css/layui.css" rel="stylesheet" />
+    <script src="../JS/jquery-3.4.1.js"></script>
+    <script src="../JS/layui/layui.js"></script>
+    <script src="../JS/Tools.js"></script>
+    <script src="../JS/lockandkey.js"></script>
+    <style>
+        html, body {
+            width: calc(100% - 20px);
+            height: calc(100% - 20px);
+            padding: 0 10px 0 10px;
+        }
+
+        .page {
+            width: 100%;
+            height: 100%;
+        }
+
+        .layui-table-tool-temp {
+            font-weight: 600;
+        }
+
+        .layui-table-click {
+            background-color: #fde48d;
+        }
+
+        .layui-table-hover {
+            background: #fde48d !important;
+        }
+
+        .h-hvc {
+            display: flex;
+            justify-content: center !important;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div id="head"
+             class="layui-col-md12"
+             style="border-bottom: 1px solid #c0c0c0; padding: 5px 0; margin-top: 5px; display: flex; flex-direction: row;">
+            <form id="form" class="layui-form">
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width: 60px;">录入时间</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="btime" style="width: 150px"/>
+                    </div>
+                    <div class="layui-input-inline">
+                        <div class="layui-input-inline">-</div>
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="etime" style="width: 150px"/>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width: 150px;">姓名‖身份证‖联系电话</label>
+                    <div class="layui-input-inline" style="width: 160px;">
+                        <input type="text" class="layui-input" id="para" name="para" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width: 60px;">核酸结果</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <select id="hsjg"
+                                lay-filter="hsjg"
+                                lay-verify="required">
+                            <option value="0">全部</option>
+                            <option value="1">阴性</option>
+                            <option value="2">阳性</option>
+                            <option value="3">未出结果</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+            <div class="layui-inline" style="margin-left: 10px;">
+                <button type="button"
+                        class="layui-btn"
+                        onclick="getData()">
+                    <i class="layui-icon">&#xe615;</i> 查询
+                </button>
+                <button class="layui-btn " lay-event="reset_pwd" id="reset_pwd"><i class="layui-icon">&#xe642;</i>修改密码</button>
+                <button class="layui-btn " lay-event="reset_pwd" id="create"><i class="layui-icon">&#xe63c;</i>生成核酸结果</button>
+            </div>
+        </div>
+        <div class="layui-col-md12">
+            <table id="tb" lay-filter="tb"></table>
+        </div>
+    </div>
+
+
+    <div id="loginDiv" style="display: none;">
+        <div class="layui-col-md12">
+            <form id="form" class="layui-form" style="margin-top: 10px;">
+                <div class="layui-form-item " style="margin-bottom: 5px;">
+                    <label class="layui-form-label" style="text-align: right; width: 60px;">账号：</label>
+                    <div class="layui-input-inline">
+                        <input id="code"
+                               name="code"
+                               placeholder="请输入账号"
+                               lay-verify="required|number"
+                               class="layui-input"
+                               style="width: 200px;" />
+                    </div>
+                </div>
+                <div class="layui-form-item " style="margin-bottom: 5px;">
+                    <label class="layui-form-label" style="text-align: right; width: 60px;">密码：</label>
+                    <div class="layui-input-inline">
+                        <input id="pwd"
+                               name="pwd"
+                               type="password"
+                               placeholder="请输入密码"
+                               lay-verify="required"
+                               class="layui-input"
+                               style="width: 200px;
+    " />
+                    </div>
+                </div>
+                <div class="h-hvc">
+                    <button type="button"
+                            class="layui-btn layui-btn-normal"
+                            onclick="login()">
+                        登录
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="updatePwdDiv" style="display: none;">
+        <div class="layui-col-md12">
+            <form id="form" class="layui-form" style="margin-top: 10px;">
+                <div class="layui-form-item " style="margin-bottom: 5px;">
+                    <label class="layui-form-label" style="text-align: right; width: 70px;">原密码：</label>
+                    <div class="layui-input-inline">
+                        <input id="ypwd"
+                               type="password"
+                               placeholder="原密码"
+                               lay-verify="required|number"
+                               class="layui-input"
+                               style="width: 200px;" />
+                    </div>
+                </div>
+                <div class="layui-form-item " style="margin-bottom: 5px;">
+                    <label class="layui-form-label" style="text-align: right; width: 70px;">新密码：</label>
+                    <div class="layui-input-inline">
+                        <input id="xpwd"
+                               type="password"
+                               placeholder="请输入新密码"
+                               lay-verify="required"
+                               class="layui-input"
+                               style="width: 200px;
+    " />
+                    </div>
+                </div>
+                <div class="layui-form-item " style="margin-bottom: 5px;">
+                    <label class="layui-form-label" style="text-align: right; width: 70px;">确认密码：</label>
+                    <div class="layui-input-inline">
+                        <input id="qrpwd"
+                               type="password"
+                               placeholder="请确认新密码"
+                               lay-verify="required"
+                               class="layui-input"
+                               style="width: 200px;
+    " />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="updateHsjgDiv" style="display: none;">
+        <div class="layui-col-md12">
+            <form id="form" class="layui-form" style="margin-top: 10px;">
+                <div class="layui-form-item " style="margin-bottom: 5px;">
+                    <label class="layui-form-label" style="text-align: right; width: 70px;">核酸结果：</label>
+                    <div class="layui-input-inline">
+                        <select id="upthsjg"
+                                lay-filter="upthsjg"
+                                lay-verify="required">
+                            <option value="1">阴性</option>
+                            <option value="2">阳性</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    let loginInfo = null
+    let loginDiv = null
+    let hsTable = null
+    let tableData = []
+    $(function () {
+        layui.use("table", function () {
+            var table = layui.table
+            var form = layui.form
+            loginDiv = layer.open({
+                type: 1,
+                area: ["400px", "200px"],
+                title: "登录",
+                content: $("#loginDiv"),
+                cancel: function () {
+                    location.href = location.href
+                }
+            });
+            table.render({
+                elem: "#tb",
+                height: $(".page").height() - $("#head").height(),
+                data: [],
+                toolbar: "#toolbar",
+                toolbar: "<div>核酸集采信息</div>",
+                defaultToolbar: [{ title: '导出', layEvent: 'export', icon: 'layui-icon-export' }],
+                title: "核酸集采统计",
+                cols: [
+                    [
+                        { type: 'checkbox' },
+                        {
+                            field: "cz",
+                            title: "操作",
+                            width: 80,
+                            align: 'center',
+                            templet: function (d) {
+                                if (d.hsjg) return '<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>'
+                                else return ''
+                            }
+                        },
+                        {
+                            field: "hsjg",
+                            title: "核酸结果",
+                            width: 90,
+                            align: 'center',
+                            templet: function (d) {
+                                if (d.hsjg == 1) return '<span style="color: #00db00">阴性</span>'
+                                else if (d.hsjg == 2) return '<span style="color: red">阳性</span>'
+                                else return '暂无'
+                            }
+                        },
+                        {
+                            field: "bgsj",
+                            title: "检测时间",
+                            width: 200,
+                            templet: function (d) {
+                                if (d.hsjg) return d.bgsj.replace('T', ' ')
+                                else return '暂无'
+                            }
+                        },
+                        {
+                            field: "yymc",
+                            title: "医院名称",
+                            width: 150
+                        },
+                        {
+                            field: "bh",
+                            title: "编号",
+                            width: 150,
+                            templet: function (d) {
+                                return d.yyid + '-' + d.zh + '-' + d.xh
+                            }
+                        },
+                        {
+                            field: "xm",
+                            title: "姓名",
+                            width: 100
+                        },
+                        {
+                            field: "sfzh",
+                            title: "身份证号",
+                            width: 200
+                        },
+                        {
+                            field: "xb",
+                            title: "性别",
+                            width: 80
+                        },
+                        {
+                            field: "nl",
+                            title: "年龄",
+                            width: 80,
+                            templet: function (d) {
+                                return d.nl + '岁'
+                            }
+                        },
+                        {
+                            field: "sjh",
+                            title: "手机号",
+                            width: 150
+                        },
+                        {
+                            field: "xzz",
+                            title: "现住址",
+                            width: 200
+                        },
+                        {
+                            field: "gfx",
+                            title: "是否去过高风险地区",
+                            width: 100,
+                            templet: function (d) {
+                                return d.gfx == '0' ? '否' : '是'
+                            }
+                        },
+                        {
+                            field: "fr",
+                            title: "是否发热",
+                            width: 100,
+                            templet: function (d) {
+                                return d.fr == '0' ? '否' : '是'
+                            }
+                        },
+                        {
+                            field: "lrsj",
+                            title: "录入时间",
+                            width: 200,
+                            templet: function (d) {
+                                return d.lrsj.replace('T', ' ')
+                            }
+                        }]
+                ],
+                page: true,
+                limits: [10,20,30,40,50,10000]
+            })
+
+            //监听行单击事件（双击事件为：rowDouble）
+            table.on("row(tb)", function (obj) {
+                //标注选中样式
+                obj.tr
+                    .addClass("layui-table-click")
+                    .siblings()
+                    .removeClass("layui-table-click");
+            });
+            //监听头工具栏
+            table.on('toolbar(tb)', function (obj) {
+                if (obj.event === 'export') {
+                    let data = {
+                        "sign": "export",
+                        "yyid": loginInfo.yyid,
+                        "btime": $("#btime").val(),
+                        "etime": $("#etime").val(),
+                        "para": $("#para").val(),
+                        "hsjg": $("#hsjg").val()
+                    };
+                    var exportindex = layer.load(0);
+                    t_ajax("../CTL/UserBind.ashx", data, function (rel) {
+                        layer.close(exportindex);
+                        window.location.href = rel.responseText;
+                    })
+                }
+            });
+            //监听行工具栏
+            table.on('tool(tb)', function (obj) {
+                var row = obj.data; //获得当前行数据
+                if (row) {
+                    if (obj.event === 'edit') {
+                        $("#upthsjg").val(row.hsjg)
+                        form.render('select');
+                        layer.open({
+                            type: 1,
+                            area: ["400px", "250px"],
+                            title: "修改核酸结果",
+                            content: $("#updateHsjgDiv"),
+                            btn: ["保存", "取消"],
+                            btn1: function (index, layero) {
+                                var updateHsjgindex = layer.load(0);
+                                let upthsjg = $("#upthsjg").val()
+                                let data = {
+                                    "sign": "UpdateHsjg",
+                                    "bh": row.yyid + '-' + row.zh + '-' + row.xh,
+                                    "upthsjg": $("#upthsjg").val(),
+                                    "yyid": row.yyid
+                                }
+                                t_ajax("../CTL/UserBind.ashx", data, function (rel) {
+                                    layer.close(updateHsjgindex);
+                                    if (rel) {
+                                        layer.close(index)
+                                        layer.msg("修改成功")
+                                        getData()
+                                    }
+                                    else
+                                        layer.msg("修改失败，请联系管理人员")
+                                })
+                            }
+                        })
+                    }
+                }
+                else {
+                    layer.msg("获取行数据失败，请联系管理人员")
+                }
+            })
+        })
+        //修改密码
+        $("#reset_pwd").on("click", function () {
+            layer.open({
+                type: 1,
+                area: ["400px", "270px"],
+                title: "修改密码",
+                content: $("#updatePwdDiv"),
+                btn: ["保存", "取消"],
+                btn1: function (index, layero) {
+                    let ypwd = $("#ypwd").val()
+                    let xpwd = $("#xpwd").val()
+                    let qrpwd = $("#qrpwd").val()
+                    if (IsNullOrEmpty(ypwd)) {
+                        layer.msg("请填写原密码");
+                        return
+                    }
+                    if (IsNullOrEmpty(xpwd)) {
+                        layer.msg("请填写新密码");
+                        return
+                    }
+                    if (IsNullOrEmpty(qrpwd)) {
+                        layer.msg("请填写确认密码");
+                        return
+                    }
+                    if (qrpwd != xpwd) {
+                        layer.msg("两次密码不一样");
+                        return
+                    }
+                    let data = {
+                        "sign": "UpdatePwd",
+                        yyid: loginInfo.yyid,
+                        ypwd: ypwd,
+                        pwd: xpwd
+                    }
+                    var uptIndex = layer.load(0);
+                    t_ajax("../CTL/UserBind.ashx", data, function (rel) {
+                        layer.close(uptIndex);
+                        if (rel == true) {
+                            $("#ypwd").val("")
+                            $("#xpwd").val("")
+                            $("#qrpwd").val("")
+                            layer.msg("密码修改成功");
+                            layer.close(index);
+                        }
+                        else {
+                            layer.msg(rel.responseText);
+                        }
+                    })
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                },
+            });
+        })
+        //生成核酸结果
+        $("#create").on("click", function () {
+            layui.use("table", function () {
+                var table = layui.table
+                var checkStatus = table.checkStatus('tb');
+                if (checkStatus.data.length == 0) {
+                    layer.msg("请选择要生成核酸结果的数据");
+                    return;
+                }
+                if (checkStatus.data.filter(item => {
+                    if (item.hsjg)
+                        return item
+                }).length > 0) {
+                    layer.msg("所选行已存在有核酸结果的数据，不允许重复提交");
+                    return;
+                }
+
+                layer.open({
+                    type: 1
+                    , title: false
+                    , closeBtn: false
+                    , area: '300px;'
+                    , shade: 0.8
+                    , id: 'createLayer'
+                    , btn: ['生成', '取消']
+                    , btnAlign: 'c'
+                    , moveType: 1
+                    , content: '<div style="padding: 30px 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">生成后的核酸结果全部为阴性，如有不同请生成后修改对应核酸结果</div>'
+                    , yes: function (index, layero) {
+                        var generateindex = layer.load(0);
+                        let data = {
+                            "sign": "GenerateResult",
+                            "list": JSON.stringify(checkStatus.data)
+                        }
+                        t_ajax("../CTL/UserBind.ashx", data, function (rel) {
+                            layer.close(generateindex);
+                            if (rel) {
+                                layer.close(index)
+                                layer.msg("已生成");
+                                getData()
+                            }
+                            else {
+                                layer.msg("生成失败，请联系管理人员");
+                            }
+                        })
+                    }
+                });
+            })
+        })
+    })
+    //登录
+    function login() {
+        layui.use("layer", function () {
+            let code = $("#code").val()
+            let pwd = $("#pwd").val()
+            if (IsNullOrEmpty(code)) {
+                layer.msg("账号不能为空");
+                return
+            }
+            if (IsNullOrEmpty(pwd)) {
+                layer.msg("密码不能为空");
+                return
+            }
+            var a = jsencrypt("code", code);
+            let data = {
+                "sign": "Login",
+                code: code,
+                pwd: pwd
+            }
+            var loginIndex = layer.load(0);
+            t_ajax("../CTL/UserBind.ashx", data, function (rel) {
+                layer.close(loginIndex);
+                if (!rel[0]) {
+                    layer.msg("账号密码错误");
+                }
+                else {
+                    layer.close(loginDiv)
+                    loginInfo = rel[0]
+                    TimeFz()
+                }
+            })
+        })
+    }
+    //获取table数据
+    function getData(btime, etime) {
+        layui.use("table", function () {
+            var table = layui.table;
+            var index = layer.load(0);
+            let data = {
+                "sign": "GetHsryxxByYyid",
+                "yyid": loginInfo.yyid,
+                "btime": btime ? btime : $("#btime").val(),
+                "etime": etime ? etime : $("#etime").val(),
+                "para": $("#para").val(),
+                "hsjg": $("#hsjg").val()
+            };
+            t_ajax("../CTL/UserBind.ashx", data, function (rel) {
+                layer.close(index);
+                if (!rel[0]) {
+                    var options = {
+                        elem: "#tb", //其它参数在此省略
+                        data: [], //赋值数据
+                        page: true, //开启分页
+                    };
+                    table.reload("tb", options);
+                    layer.msg("暂无核酸集采信息");
+                }
+                else {
+                    tableData = rel
+                    var options = {
+                        elem: "#tb", //其它参数在此省略
+                        data: rel, //赋值数据
+                        page: true, //开启分页
+                    };
+                    table.reload("tb", options);
+                }
+            })
+        })
+    }
+    //时间框初始化
+    function TimeFz() {
+        layui.use("form", function () {
+            var form = layui.form;
+            var d = new Date();
+
+            var d2 = new Date(
+                d.toLocaleDateString().replace("/", "-").replace("/", "-")
+            );
+            d.setMonth(d.getMonth() - 1);
+            var d1 = new Date(
+                d.toLocaleDateString().replace("/", "-").replace("/", "-")
+            );
+            var s2 =
+                d2.getFullYear() +
+                "-" +
+                (d2.getMonth() + 1 >= 10
+                    ? d2.getMonth() + 1
+                    : "0" + (d2.getMonth() + 1)) +
+                "-" +
+                (d2.getDate() >= 10 ? d2.getDate() : "0" + d2.getDate()) + " 23:59:59";
+            var s1 =
+                d1.getFullYear() +
+                "-" +
+                (d1.getMonth() + 1 >= 10
+                    ? d1.getMonth() + 1
+                    : "0" + (d1.getMonth() + 1)) +
+                "-" +
+                (d1.getDate() >= 10 ? d1.getDate() : "0" + d1.getDate()) + " 00:00:00";
+
+            //日期控件初始化
+            layui.use("laydate", function () {
+                var laydate = layui.laydate;
+                //执行一个laydate实例
+                laydate.render({
+                    elem: "#btime", //指定元素
+                    type: 'datetime',
+                    value: s1.toString(),
+                });
+            });
+            layui.use("laydate", function () {
+                var laydate = layui.laydate;
+                //执行一个laydate实例
+                laydate.render({
+                    elem: "#etime", //指定元素
+                    type: 'datetime',
+                    value: s2.toString(),
+                });
+            });
+            form.render();
+            getData(s1, s2)
+        });
+    }
+</script>

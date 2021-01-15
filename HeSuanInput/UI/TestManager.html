@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <script src="../JS/jquery-3.4.1.js"></script>
+    <script type="text/javascript">
+        function GetLoginInfo() {
+            $.post("../CTL/Manager.ashx?operate=GetLoginInfo", { code: "0001", pwd: "000000" }, function (result) {
+                $("span").html(result);
+            });
+        }
+
+        function GetReportInfo() {
+            $.post("../CTL/Manager.ashx?operate=GetReportInfo", { start: "2021-01-03 00:00:00", end: "2021-01-20 00:00:00", hospital_code: "", place_code: "" }, function (result) {
+                $("span").html(result);
+            });
+        }
+
+        function GetSampleInfo() {
+            $.post("../CTL/Manager.ashx?operate=GetSampleInfo", { start: "2021-01-03 00:00:00", end: "2021-01-20 00:00:00", hospital_code: "", place_code: "" }, function (result) {
+                $("span").html(result);
+            });
+        }
+
+        function GetNewBarNO() {
+            $.post("../CTL/Manager.ashx?operate=GetNewBarNO", {}, function (result) {
+                $("span").html(result);
+            });
+        }
+
+        function ExpExcelSampleInfo() {
+            $.post("../CTL/Manager.ashx?operate=ExpExcelSampleInfo", { start: "2021-01-03 00:00:00", end: "2021-01-20 00:00:00", hospital_code: "", place_code: "" }, function (result) {
+                $("span").html(result);
+            });
+        }
+
+        function UpdateReportResultInfo() {
+            $.post("../CTL/Manager.ashx?operate=UpdateReportResultInfo", { result: "[{'bar_no':'00000000001','report_result':'阳性'}]" }, function (result) {
+                $("span").html(result);
+            });
+        }
+    </script>
+	<meta charset="utf-8" />
+</head>
+<body>
+    <input type="button" value="得到登录信息" onclick="GetLoginInfo();" />
+    <input type="button" value="得到报告信息" onclick="GetReportInfo();" />
+    <input type="button" value="得到采集信息" onclick="GetSampleInfo();" />
+    <input type="button" value="获取条码" onclick="GetNewBarNO();" />
+    <input type="button" value="导出集采信息" onclick="ExpExcelSampleInfo();" />
+    <input type="button" value="更新结果信息" onclick="UpdateReportResultInfo();" />
+    <span></span>
+</body>
+</html>

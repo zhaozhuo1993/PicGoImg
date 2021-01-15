@@ -1,0 +1,65 @@
+﻿.top{
+    background-color: white;
+    width: calc(100% - 30px);
+    margin-left: 15px;
+    padding: 10px 0;
+    border-radius: 5px;
+}
+
+.bline {
+    width: 5px;
+    height: 20px;
+    background-color: #2C63DC;
+}
+
+.title {
+    color: #2C63DC;
+    letter-spacing: 2px;
+}
+
+.top-con {
+    width: calc(100% - 30px);
+    padding: 0 15px;
+    font-size: 14px;
+}
+
+.mid {
+    background-color: white;
+    width: calc(100% - 30px);
+    margin-left: 15px;
+    padding: 10px 0;
+    border-radius: 5px;
+}
+
+.title-ts {
+    font-size: 12px;
+    letter-spacing: 0;
+}
+
+
+
+
+.bot {
+    background-color: white;
+    width: calc(100% - 30px);
+    margin-left: 15px;
+    padding: 10px 0;
+    border-radius: 5px;
+}
+
+.ft {
+    font-size: 16px;
+    color: #2C63DC;
+}
+
+
+.btn {
+    width: 90%;
+    margin-left: 5%;
+    height: 40px;
+    border-radius: 5px;
+    background-color: #2C63DC;
+    color: white;
+    font-size: 14px;
+    letter-spacing: 2px;
+}

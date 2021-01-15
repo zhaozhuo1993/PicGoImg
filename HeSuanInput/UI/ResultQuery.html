@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>核酸检测查询</title>
+    <link href="../CSS/weui.css" rel="stylesheet" />
+    <script src="../JS/setting.js"></script>
+    <script src="../JS/jquery-3.4.1.js"></script>
+    <script src="../JS/weui.js"></script>
+    <script src="../JS/Tools.js"></script>
+    <style>
+
+        html {
+            width: 100%;
+            height: 100%;
+            background-color: #f5f5f5;
+        }
+
+        .hl_btn {
+            padding: 10px 16px;
+            display: flex;
+            flex-direction: row;
+        }
+
+
+        .weui-btn_cell, #send_phone_verification_num {
+            display: block;
+            width: 100%;
+            height: 100%;
+            color: rgb(255,255,255);
+            border-radius: 50px;
+            background: #11cb90;
+            background: -moz-linear-gradient(left, #11cb90 0%, #32deb8 100%);
+            background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#11cb90), color-stop(100%,#32deb8));
+            background: -webkit-linear-gradient(left, #11cb90 0%,#32deb8 100%);
+            background: -o-linear-gradient(left, #11cb90 0%,#32deb8 100%);
+            /*background: -ms-linear-gradient(top, #11cb90 0%,#32deb8 100%);*/
+            background: linear-gradient(to right, #11cb90 0%,#32deb8 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#11cb90', endColorstr='#32deb8',GradientType=0 );
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .f_sb {
+            justify-content: space-between;
+        }
+
+        .h-hvc {
+            display: flex;
+            justify-content: center !important;
+            align-items: center;
+        }
+
+        .v-vc {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .con {
+            margin-top: 10px;
+            width: calc(100% - 60px);
+            margin-left: 15px;
+            padding: 0 15px 15px 15px;
+            background-color: white;
+        }
+
+        .title {
+            font-weight: 600;
+            height: 40px;
+            border-bottom: 1px solid #f5f5f5;
+        }
+
+        .jg {
+            height: 150px;
+        }
+
+        .xx {
+            height: 60px;
+            width: calc(100% - 30px);
+            padding: 0 15px;
+            background-color: #F5F9FC;
+            font-size: 12px;
+            color: #666666;
+            letter-spacing: 1px;
+        }
+
+        .yuan {
+            width: 70px;
+            height: 70px;
+            border-radius: 35px;
+            font-size: 17px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div style="padding: 0 15px;">
+        <div class="weui-cells weui-cells_form" style="border-radius: 5px;">
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">姓名</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入您的真实姓名" id="xm">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">身份证号</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入您的身份证号" maxlength="18" id="sfzh">
+                </div>
+            </div>
+            <div class="weui-cell">
+                <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" placeholder="请输入您的手机号" maxlength="11" id="sjh">
+                </div>
+            </div>
+            <div class="hl_btn">
+                <a class="weui-btn_cell" href="javascript:" id="search">查询</a>
+            </div>
+        </div>
+    </div>
+    <div class="con" style="display: none">
+        <div class="title v-vc">核酸检测结果</div>
+        <div class="jg h-hvc">
+            <div class="yuan h-hvc" id="hsjg"></div>
+        </div>
+        <div class="xx v-vc">
+            <div>检测时间：<span id="jcsj"></span></div>
+            <div>检测机构：<span id="yymc"></span></div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    let yyid = t_request("yyid");
+    $(function () {
+        if (IsNullOrEmpty(yyid)) {
+            weui.alert("医院ID不能为空！")
+        }
+
+        $("#search").on('click', function () {
+            getData()
+        })
+    })
+    //获取核酸结果数据
+    function getData() {
+        $(".con").hide()
+        if (IsNullOrEmpty(yyid)) {
+            weui.alert("医院ID不能为空！")
+            return
+        }
+        let xm = $("#xm").val().trim()
+        let sfzh = $("#sfzh").val().trim()
+        let sjh = $("#sjh").val().trim()
+        if (IsNullOrEmpty(xm)) {
+            weui.alert("请填写姓名");
+            return;
+        }
+        if (IsNullOrEmpty(sfzh)) {
+            weui.alert("请填写身份证号");
+            return;
+        }
+        if (!CheckIDCard(sfzh)) {
+            weui.alert("身份证号格式不正确");
+            return;
+        }
+        if (IsNullOrEmpty(sjh)) {
+            weui.alert("请填写手机号");
+            return;
+        }
+        if (!CheckPhone(sjh)) {
+            weui.alert("手机号格式不正确");
+            return;
+        }
+        loading = weui.loading("查询中...");
+        let data = {
+            "sign": "GetHsjg",
+            "yyid": yyid,
+            "xm": xm,
+            "sfzh": sfzh,
+            "sjh": sjh
+        }
+        t_ajax("../CTL/UserBind.ashx", data, function (rel) {
+            loading.hide()
+            if (!rel[0]) {
+                weui.alert("暂无检测结果");
+            }
+            else {
+                if (rel[0].hsjg == 1) {
+                    $("#hsjg").attr("style","background-color: #7EC450;")
+                    $("#hsjg").html("阴性");
+                }
+                else if (rel[0].hsjg == 2) {
+                    $("#hsjg").attr("style", "background-color: red;")
+                    $("#hsjg").html("阳性");
+                }
+                else {
+                    $("#hsjg").html("暂无");
+                }
+                $("#jcsj").html(rel[0].bgsj.split('T')[0]);
+                $("#yymc").html(rel[0].yymc);
+                $(".con").show()
+            }
+        })
+    }
+</script>

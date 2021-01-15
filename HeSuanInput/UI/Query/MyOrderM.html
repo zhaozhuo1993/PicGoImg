@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>申请记录</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0" />
+    <link href="../../CSS/weui.min.css" rel="stylesheet" />
+    <link href="../../CSS/jquery-weui.css" rel="stylesheet" />
+
+    <style>
+        .tit_cen {
+            text-align: center;
+        }
+
+        html, body {
+            width: 100%;
+            height: 90%;
+            margin: 0px;
+            padding: 0px;
+            background-color: #F4F3F8;
+        }
+
+        .inline_h {
+            padding-top: 1em;
+            padding-left: 0.5em;
+        }
+
+        .div_mt {
+            margin-top: 1em;
+            width: 90%;
+            margin-left: 5%;
+        }
+    </style>
+</head>
+<body>
+    <div id="div_cells" style="padding-bottom: 2em;">
+    </div>
+    <div id="div_null" class="tit_cen" style="display:none;">
+        <img src="Img/无数据.png" style="width:11em;height:11em;" />
+        <p style="margin-top:1em;font-weight:bold;">
+            未查询到数据！
+        </p>
+    </div>
+</body>
+</html>
+
+<script src="../../JS/jquery-3.4.1.js"></script>
+<script src="../../JS/jquery-weui.min.js"></script>
+<script src="../../JS/Query.js?V=7"></script>
+
+
+
+<script>
+    $(function () {
+        GetOpenId_L(GetListOrder);
+    });
+
+    /**
+     * 获取订单主信息
+     * */
+    window.GetListOrder = function () {
+        $.showLoading("正在加载...");
+        $.ajax({
+            url: "../../CTL/Query.ashx",
+            type: "POST",
+            data: {
+                "sign": "GetOrderMain",
+                "qs": "",
+                "zs": "",
+                "openid":  localStorage.getItem("openid")   //测试
+            },
+            dataType: "json",
+            success: function (json) {
+                $.hideLoading();
+                if (json.code == "0") {
+                    $.alert(json.msg);
+                    $("#div_null").show();
+                    $("#div_cells").hide();
+                }
+                else {
+                    var str = "";
+                    for (var i = 0; i < json.data.length; i++) {
+                        str += ' <div class="weui-cells div_mt">';
+                        str += '    <a class="weui-cell weui-cell_access" href="MyOrderN.html?lsh=' + json.data[i]["lsh"] + '">';
+                        str += '        <div class="weui-cell__hd" style="background-color: #2C63DC;">&nbsp;</div>';
+                        str += '        <div class="weui-cell__bd" style="margin-left: 1em;">';
+                        str += '            <p>' + str_qm(json.data[i]["xm"],2) + '</p>';
+                        str += '        </div>';
+                        str += '        <div class="weui-cell__ft"></div>';
+                        str += '    </a>';
+                        str += '    <div style="margin: 1em; background-color: #F4F3F8;">';
+                        str += '        <p class="inline_h">证件号码:' + str_qm(json.data[i]["zjh"], 1) + '</p>';
+                        str += '        <p class="inline_h">登记日期:' + json.data[i]["lrsj"] + '</p>';
+                        str += '    </div>';
+                        str += '</div>';
+                    }
+                    $("#div_cells").html(str);
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $.hideLoading();
+                alert(XMLHttpRequest.status);
+                alert(XMLHttpRequest.readyState);
+                alert(textStatus);
+            }
+        });
+    }
+
+</script>

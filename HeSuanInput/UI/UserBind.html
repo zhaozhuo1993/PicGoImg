@@ -1,0 +1,565 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>核酸检测人员信息录入</title>
+    <link href="../CSS/weui.css" rel="stylesheet" />
+    <script src="../JS/setting.js"></script>
+    <style>
+        html, body {
+            /*background-color: rgb(245,245,245);*/
+        }
+
+        .hl_btn {
+            padding: 30px 16px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .weui-btn_cell, #send_phone_verification_num {
+            display: block;
+            width: 100%;
+            height: 100%;
+            color: rgb(255,255,255);
+            border-radius: 50px;
+            background: #11cb90;
+            background: -moz-linear-gradient(left, #11cb90 0%, #32deb8 100%);
+            background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#11cb90), color-stop(100%,#32deb8));
+            background: -webkit-linear-gradient(left, #11cb90 0%,#32deb8 100%);
+            background: -o-linear-gradient(left, #11cb90 0%,#32deb8 100%);
+            /*background: -ms-linear-gradient(top, #11cb90 0%,#32deb8 100%);*/
+            background: linear-gradient(to right, #11cb90 0%,#32deb8 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#11cb90', endColorstr='#32deb8',GradientType=0 );
+        }
+
+        .weui-cell {
+            display: block;
+            padding: 8px 16px;
+        }
+
+        .weui-cell__hd {
+            width: 100%;
+        }
+
+        .weui-cell__bd {
+            margin-top: 10px;
+        }
+
+        .weui-btn {
+            width: 100px;
+            padding: 0;
+            background-color: rgb(255,255,255);
+            border-radius: 0;
+        }
+
+        #imgCode {
+            width: 100px;
+        }
+
+        #send_phone_verification_num {
+            width: 100px;
+            padding: 8px 0;
+            font-weight: normal;
+            font-size: 14px;
+        }
+
+        #div_xh {
+            display: none;
+        }
+
+        .xing {
+            color: red;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .f_sb {
+            justify-content: space-between;
+        }
+
+        .h-hvc {
+            display: flex;
+            justify-content: center !important;
+            align-items: center;
+        }
+
+        .sb {
+            width: 100px;
+            height: 30px;
+            border-radius: 5px;
+            font-size: 12px;
+            background-color: #D9AD77;
+            color: white;
+        }
+
+
+    </style>
+</head>
+<body>
+    <!--<div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">组号：<span style="color:red;font-weight:bold" id="sp_zh"></span></label></div>
+        <div class="weui-cell__hd" id="div_xh"><label class="weui-label">序号：<span style="color:red;font-weight:bold" id="sp_xh"></span></label></div>
+    </div>-->
+
+    <input type="file" accept="image/*" id="fileInput" style="display: none" onchange="uploadImg(this)" />
+    <div class="weui-cell">
+        <div class="weui-cell__hd row f_sb">
+            <label class="weui-label">姓名<span class="xing">*</span></label>
+            <div class="sb h-hvc" id="ocrDiv">身份证识别</div>
+        </div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="请输入您的真实姓名" id="xm">
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">身份证号<span class="xing">*</span></label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="请输入您的身份证号" maxlength="18" id="sfzh">
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">性别</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="性别" disabled="disabled" id="xb">
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">年龄</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="年龄" disabled="disabled" id="nl">
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">手机号<span class="xing">*</span></label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="number" placeholder="请输入您的手机号" pattern="[0-9]*" id="sjh">
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">现住址<span class="xing">*</span></label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="请输入您的现住址" id="xzz">
+        </div>
+    </div>
+    <div class="weui-cell weui-cell_active weui-cell_access " id="gfx" gfx_type="0">
+        <div class="weui-cell__hd"><label class="weui-label" style="width:100%">是否去过高风险地区</label></div>
+        <div class="weui-cell__bd">
+            <span style="vertical-align: middle;">否</span>
+        </div>
+    </div>
+    <div class="weui-cell weui-cell_active weui-cell_access " id="fr" fr_type="0">
+        <div class="weui-cell__hd"><label class="weui-label" style="width:100%">是否发热</label></div>
+        <div class="weui-cell__bd">
+            <span style="vertical-align: middle;">否</span>
+        </div>
+    </div>
+    <div id="con">
+
+    </div>
+    <div class="weui-cell weui-cell_active weui-cell_access " id="ryfl" ryfl_type="" style="display: none">
+        <div class="weui-cell__hd"><label class="weui-label" style="width:100%">人员分类</label></div>
+        <div class="weui-cell__bd">
+            <span style="display:block; vertical-align: middle; height: 27px"></span>
+        </div>
+    </div>
+    <div class="weui-cell weui-cell_active weui-cell_access " id="sfzf" sfzf_type="0" style="display: none">
+        <div class="weui-cell__hd"><label class="weui-label" style="width:100%">是否自费</label></div>
+        <div class="weui-cell__bd">
+            <span style="vertical-align: middle;">否</span>
+        </div>
+    </div>
+    <div class="weui-cell">
+        <div class="weui-cell__hd"><label class="weui-label">采样机构</label></div>
+        <div class="weui-cell__bd">
+            <input class="weui-input" type="text" placeholder="采样机构" disabled="disabled" id="yymc">
+        </div>
+    </div>
+    <div class="hl_btn">
+        <div style="width: 46%">
+            <a class="weui-btn_cell" href="javascript:" id="toResultQuery">结果查询</a>
+        </div>
+        <div style="width: 46%; margin-left: 6%">
+            <a class="weui-btn_cell" href="javascript:" id="info_sub">提交</a>
+        </div>
+    </div>
+</body>
+</html>
+<script src="../JS/jquery-3.4.1.js"></script>
+<script src="../JS/weui.js"></script>
+<script src="../JS/Tools.js"></script>
+<script>
+    //初始化输入框信息
+    $("#xm").val("");
+    $("#sfzh").val("");
+    $("#xb").val("");
+    $("#nl").val("");
+    $("#sjh").val("");
+    $("#xzz").val("");
+    $("#yymc").val("");
+    SetGfxSelect("0", "否");
+    SetFrSelect("0", "否");
+    let yyid = t_request("yyid");
+    if (yyid == 13) {
+        $("#ryfl").show()
+        $("#sfzf").show()
+        SetRyflSelect("", "");
+        SetSfzfSelect("0", "否");
+    }
+    if (yyid == 15) {
+        $("#xzzxing").attr("style", "display:none")
+    }
+    let zh = t_request("zh");
+    let yymc = "";
+    let bz = "";
+    let id = "";
+    let isSave = true
+    getHos()
+    //获取医院信息
+    function getHos() {
+        let json = {
+            "sign": "gethos",
+            "yyid": yyid
+        };
+        if (!yyid) {
+            weui.alert("医院ID不能为空！")
+            return
+        }
+        if (!zh) {
+            weui.alert("组号不能为空！")
+            return
+        }
+        t_ajax("../CTL/UserBind.ashx", json, function (json) {
+            // alert("UserRegister:" + data.IsSuccess + "---" + data.Data)
+            if (json == "")
+                weui.alert("获取医院信息失败");
+            else {
+                let yyinfo = json[0];
+                yymc = yyinfo.YYMC;
+                bz = yyinfo.BZ;
+                $("#yymc").val(yymc);
+                if (yyinfo.isuse != "1") {
+                    weui.dialog({
+                        title: '提示',
+                        content: '当前系统维护中，暂不支持使用',
+                        className: 'custom-classname',
+                        buttons: []
+                    })
+                    //weui.loading("");
+                }
+                else {
+                    let info = GetLocalInfo();
+                    if (!IsNullOrEmpty(info)) {
+                        let infodata = JSON.parse(info);
+                        if (yyid == infodata.yyid) {
+                            location.href = './UserInfo.html'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    //识别身份证信息
+    function ocr(imgBase64) {
+        let data = {
+            "sign": "Ocr",
+            imgBase64: ""
+        }
+        loading = weui.loading("识别中...");
+        t_ajax("../CTL/UserBind.ashx", data, function (data) {
+            debugger
+        })
+    }
+    //高风险 单选
+    $("#gfx").click(function () {
+        weui.actionSheet([
+            {
+                label: '否',
+                onClick: function () {
+                    SetGfxSelect("0", "否");
+                }
+            }, {
+                label: '是',
+                onClick: function () {
+                    SetGfxSelect("1", "是");
+                }
+            }
+        ]);
+    });
+    function SetGfxSelect(code, text) {
+        $("#gfx").attr("gfx_type", code).find("span").text(text)
+    }
+
+    //发热 单选
+    $("#fr").click(function () {
+        weui.actionSheet([
+            {
+                label: '否',
+                onClick: function () {
+                    SetFrSelect("0", "否");
+                }
+            }, {
+                label: '是',
+                onClick: function () {
+                    SetFrSelect("1", "是");
+                }
+            }
+        ]);
+    });
+    function SetFrSelect(code, text) {
+        $("#fr").attr("fr_type", code).find("span").text(text)
+    }
+
+    //人员分类 单选
+    $("#ryfl").click(function () {
+        weui.actionSheet([
+            {
+                label: '党政群机关人员',
+                onClick: function () {
+                    SetRyflSelect("党政群机关人员", "党政群机关人员");
+                }
+            }, {
+                label: '学生',
+                onClick: function () {
+                    SetRyflSelect("学生", "学生");
+                }
+            }, {
+                label: '医疗机构人员',
+                onClick: function () {
+                    SetRyflSelect("医疗机构人员", "医疗机构人员");
+                }
+            }, {
+                label: '监管场所',
+                onClick: function () {
+                    SetRyflSelect("监管场所", "监管场所");
+                }
+            }, {
+                label: '养老机构',
+                onClick: function () {
+                    SetRyflSelect("养老机构", "养老机构");
+                }
+            }, {
+                label: '物流从业人员',
+                onClick: function () {
+                    SetRyflSelect("物流从业人员", "物流从业人员");
+                }
+            }, {
+                label: '冷链食品从业人员',
+                onClick: function () {
+                    SetRyflSelect("冷链食品从业人员", "冷链食品从业人员");
+                }
+            }, {
+                label: '中高风险来卢返卢人员',
+                onClick: function () {
+                    SetRyflSelect("中高风险来卢返卢人员", "中高风险来卢返卢人员");
+                }
+            }, {
+                label: '病人及陪护',
+                onClick: function () {
+                    SetRyflSelect("病人及陪护", "病人及陪护");
+                }
+            }, {
+                label: '其他',
+                onClick: function () {
+                    SetRyflSelect("其他", "其他");
+                }
+            }
+        ]);
+        $(".weui-actionsheet__menu").attr('style', 'overflow: auto;height: 400px;')
+    });
+    function SetRyflSelect(code, text) {
+        $("#ryfl").attr("ryfl_type", code).find("span").text(text)
+    }
+
+    //是否自费 单选
+    $("#sfzf").click(function () {
+        weui.actionSheet([
+            {
+                label: '否',
+                onClick: function () {
+                    SetSfzfSelect("0", "否");
+                }
+            }, {
+                label: '是',
+                onClick: function () {
+                    SetSfzfSelect("1", "是");
+                }
+            }
+        ]);
+    });
+    function SetSfzfSelect(code, text) {
+        $("#sfzf").attr("sfzf_type", code).find("span").text(text)
+    }
+
+    //跳转核酸结果查询页面
+    $("#toResultQuery").on('click', function () {
+        location.href = "./ResultQuery.html?yyid=" + yyid
+    })
+
+    //提交信息
+    $("#info_sub").click(function () {
+        if (IsNullOrEmpty(yyid)) {
+            weui.alert("医院ID不能为空,请联系管理人员");
+            return;
+        }
+        if (IsNullOrEmpty(zh)) {
+            weui.alert("组号不能为空,请联系管理人员");
+            return;
+        }
+        let xm = $("#xm").val().trim();
+        if (IsNullOrEmpty(xm)) {
+            weui.alert("请填写姓名");
+            return;
+        }
+        let sfzh = $("#sfzh").val();
+        if (IsNullOrEmpty(sfzh)) {
+            weui.alert("请填写身份证号");
+            return;
+        }
+
+        let sjh = $("#sjh").val();
+        if (IsNullOrEmpty(sjh)) {
+            weui.alert("请填写手机号");
+            return;
+        }
+        let xzz = $("#xzz").val();
+        if (IsNullOrEmpty(xzz) && yyid != 15) {
+            weui.alert("请填写现住址");
+            return;
+        }
+        let ryfl = $("#ryfl").attr("ryfl_type");
+        if (IsNullOrEmpty(ryfl) && yyid == 13) {
+            weui.alert("请选择人员分类");
+            return;
+        }
+        let gfx = $("#gfx").attr("gfx_type");
+        let fr = $("#fr").attr("fr_type");
+        
+        let sfzf = $("#sfzf").attr("sfzf_type");
+        let lrsj = new Date("YYYY-MM-dd hh:mm:ss");
+        let json = {
+            "sign": "saveinfo",
+            "xm": xm,
+            "sfzh": sfzh,
+            "xb": GetSex(sfzh),
+            "nl": GetAge(sfzh),
+            "sjh": sjh,
+            "xzz": xzz,
+            "gfx": gfx,
+            "fr": fr,
+            "yyid": yyid,
+            "lrsj": lrsj,
+            "zh": zh,
+            "ryfl": yyid == 13 ? ryfl : "",
+            "sfzf": yyid == 13 ? sfzf : ""
+        };
+        loading = weui.loading("数据提交中...");
+        t_ajax("../CTL/UserBind.ashx", json, function (data) {
+            if (!data[0])
+                weui.alert("信息提交失败");
+            else {
+                let info = JSON.stringify(data[0]);
+                SetLocalInfo(info);
+                loading.hide()
+                weui.dialog({
+                    title: '提示',
+                    content: '您的组号为：' + data[0].zh + '  序号为：' + data[0].xh + ',请截图保存给医务人员使用，感谢您的配合！',
+                    className: 'custom-classname',
+                    buttons: [{
+                        label: '确定',
+                        type: 'primary',
+                        onClick: function () {
+                            $("#xm").val("");
+                            $("#sfzh").val("");
+                            $("#xb").val("");
+                            $("#nl").val("");
+                            $("#sjh").val("");
+                            $("#xzz").val("");
+                            $("#yymc").val("");
+                            SetGfxSelect("0", "否");
+                            SetFrSelect("0", "否");
+                            if (yyid == 13) {
+                                $("#ryfl").show()
+                                $("#sfzf").show()
+                                SetRyflSelect("", "");
+                                SetSfzfSelect("0", "否");
+                            }
+                            if (yyid == 15) {
+                                $("#xzzxing").attr("style", "display:none")
+                            }
+                            location.href = './UserInfo.html'
+                        }
+                    }]
+                });
+            }
+        });
+    });
+
+    //身份证验证
+    $("#sfzh").on('blur', function () {
+        var sfzh = $(this).val();
+        if (!CheckIDCard(sfzh) && !IsNullOrEmpty(sfzh)) {
+            weui.alert("身份证号格式不正确");
+            $(this).focus();
+        }
+        else {
+            if (!IsNullOrEmpty(sfzh)) {
+                $("#xb").val(GetSex(sfzh));
+                $("#nl").val(GetAge(sfzh));
+            }
+        }
+    });
+
+    //手机号验证
+    $("#sjh").on('blur', function () {
+        if (!CheckPhone($(this).val()) && !IsNullOrEmpty($(this).val())) {
+            weui.alert("手机号格式不正确");
+            $(this).focus();
+        }
+    });
+
+    $("#ocrDiv").on('click', function () {
+        $("#fileInput").click()
+    })
+
+    function uploadImg(e) {
+        var files = e.files;
+        if (files.length == 0) {
+            weui.alert("获取图片失败")
+            return;
+        }
+        if (files.length > 1) {
+            weui.alert("请重新上传一张图片")
+            return;
+        }
+        var formData = new FormData();
+        formData.append('file', files[0]);
+        loading = weui.loading("识别中...");
+
+        $.ajax({
+            type: "POST",
+            url: "../CTL/Upload.ashx",
+            data: formData,
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            success: function (rel) {
+                loading.hide()
+                if (rel.name) {
+                    $("#xm").val(rel.name);
+                    $("#sfzh").val(rel.num);
+                    $("#xzz").val(rel.address);
+                    $("#xb").val(GetSex(rel.num));
+                    $("#nl").val(GetAge(rel.num));
+                }
+                else {
+                    weui.alert("身份证识别失败，请稍后重试")
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,456 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>信息录入</title>
+    <link href="../../../CSS/weui.css" rel="stylesheet" />
+    <link href="../Css/common.css" rel="stylesheet" />
+    <link href="../Css/InfoCreate.css" rel="stylesheet" />
+    <link href="../Css/icon.css" rel="stylesheet" />
+    <script src="../Js/jquery1.8.3.min.js"></script>
+    <script src="../Js/common.js"></script>
+    <script src="../../../JS/weui.js"></script>
+    <script src="../Js/vue.min.js"></script>
+</head>
+<body>
+    <div id="app" style="background-color:white;">
+        <input type="file" accept="image/*" id="fileInput" style="display: none" onchange="uploadImg(this)" />
+        <div class="bar dBorder f_sb row con">
+            <div class="descxm row">
+                <div class="xm"><span style="color: red;">*</span>姓名：</div>
+            </div>
+            <div class="row h-vc rightxm f_sb">
+                <input id="xm" class="weui-input" style="width: calc(100% - 110px);" type="text" placeholder="请输入您的姓名" v-model="xm" />
+                <div class="sm h-hvc" @click="smClick">点击扫描身份证</div>
+            </div>
+        </div>
+        <div class="bar dBorder f_sb row con">
+            <div class="desc row"><span style="color: red;">*</span>身份证号：</div>
+            <div class="row h-vc right">
+                <input id="sfzh" class="weui-input" style="width: 100%;" type="text" placeholder="请输入您的身份证号" v-model="sfzh" @blur="sfzhChange" />
+            </div>
+        </div>
+        <div class="bar dBorder f_sb row con">
+            <div class="desc row" style="margin-left: 8px;">性别：</div>
+            <div class="row h-vc right">
+                <input id="xb" class="weui-input" style="width: 100%;" type="text" placeholder="性别" disabled="disabled" v-model="xb" />
+            </div>
+        </div>
+        <div class="bar dBorder f_sb row con">
+            <div class="desc row" style="margin-left: 8px;">年龄：</div>
+            <div class="row h-vc right">
+                <input id="nl" class="weui-input" style="width: 100%;" type="text" placeholder="年龄" disabled="disabled" v-model="nl" />
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="bar dBorder f_sb row con">
+            <div class="desc row"><span style="color: red;">*</span>手机号：</div>
+            <div class="row h-vc right">
+                <input class="weui-input" style="width: 100%;" type="number" placeholder="请输入您的手机号" pattern="[0-9]*" v-model="sjh" />
+            </div>
+        </div>
+        <div class="bar dBorder f_sb row con">
+            <div class="desc row" style="margin-left: 8px;">现住址：</div>
+            <div class="row h-vc right">
+                <input id="xzz" class="weui-input" style="width: 100%;" type="text" placeholder="请输入您的现住址" v-model="xzz" />
+            </div>
+        </div>
+        <div class="bar dBorder f_sb row con">
+            <div class="desc row" style="margin-left: 8px;">户籍地址：</div>
+            <div class="row h-vc right">
+                <input id="xzz" class="weui-input" style="width: 100%;" type="text" placeholder="请输入您的户籍地址" v-model="hjdz" />
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="bar dBorder f_sb row con">
+            <div class="desc2 row" style="margin-left: 8px;">人员类别：</div>
+            <div class="row h-vc right2" @click="ryflClick">
+                <div id="ryfl" :class="ryfl == '请选择人员类别'?'ft':''">{{ryfl}}</div>
+            </div>
+        </div>
+        <div class="bar dBorder f_sb row con">
+            <div class="desc1 row" style="margin-left: 8px;">是否去过高风险地区：</div>
+            <div class="row h-vc right1" @click="gfxClick">
+                <div id="gfx">{{gfx == 0?'否':'是'}}</div>
+            </div>
+        </div>
+        <div class="bar dBorder f_sb row con">
+            <div class="desc2 row" style="margin-left: 8px;">是否发热：</div>
+            <div class="row h-vc right2" @click="frClick">
+                <div id="fr">{{fr == 0?'否':'是'}}</div>
+            </div>
+        </div>
+        <div class="bar dBorder f_sb row con">
+            <div class="desc2 row" style="margin-left: 8px;">是否自费：</div>
+            <div class="row h-vc right2" @click="zfClick">
+                <div id="zf">{{zf == 0?'否':'是'}}</div>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="bar f_sb row con" style="margin-bottom: 60px;">
+            <div class="desc row" style="margin-left: 8px;">采样机构：</div>
+            <div class="row h-vc right">
+                <div id="yymc">{{yyInfo.NAME}}</div>
+            </div>
+        </div>
+        <div style="width: 100%; height: 60px;"></div>
+        <div class="btn h-hvc" @click="submit">提交</div>
+        <div v-show="isZzShow" class="zz" @click="zzClick" style="display: none"></div>
+        <div v-show="isZzShow" class="paydiv" style="display: none">
+            <div class="pay-title h-vc">
+                <i class="iconfont iconguanbi mr-m" style="color: #595BB3;" @click="zzClick"></i>
+            </div>
+            <div class="v-hc">
+                <img class="pay-img" src="../Image/cre1.png" />
+                <div class="pay-name mt-m">{{xmlxInfo.ITEM_NAME}}({{xmlxInfo.TYPE == 0?'快速':'普通'}})</div>
+                <div class="pay-je mt-s mb-s">应支付金额：¥{{xmlxInfo.ITEM_MONEY}}</div>
+            </div>
+            <div class="pay-btn h-hvc" @click="payClick">立即支付</div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    let app = new Vue({
+        el: '#app',
+        data: {
+            yyInfo: {},
+            isZzShow: false,
+            xm: '',
+            sfzh: '',
+            xb: '',
+            nl: '',
+            sjh: '',
+            xzz: '',
+            hjdz: '',
+            ryfl: '请选择人员类别',
+            gfx: '0',
+            fr: '0',
+            zf: '0',
+            xmlxInfo: {}
+        },
+        created() {
+            this.yyInfo = JSON.parse(sessionStorage.getItem('yyInfo'))
+            this.xmlxInfo = JSON.parse(sessionStorage.getItem('xmlxInfo'))
+        },
+        methods: {
+            ryflClick() {
+                let that = this
+                weui.actionSheet([
+                    {
+                        label: '党政群机关人员',
+                        onClick: function () {
+                            that.ryfl = '党政群机关人员'
+                        }
+                    }, {
+                        label: '学生',
+                        onClick: function () {
+                            that.ryfl = '学生'
+                        }
+                    }, {
+                        label: '医疗机构人员',
+                        onClick: function () {
+                            that.ryfl = '医疗机构人员'
+                        }
+                    }, {
+                        label: '监管场所',
+                        onClick: function () {
+                            that.ryfl = '监管场所'
+                        }
+                    }, {
+                        label: '养老机构',
+                        onClick: function () {
+                            that.ryfl = '养老机构'
+                        }
+                    }, {
+                        label: '物流从业人员',
+                        onClick: function () {
+                            that.ryfl = '物流从业人员'
+                        }
+                    }, {
+                        label: '冷链食品从业人员',
+                        onClick: function () {
+                            that.ryfl = '冷链食品从业人员'
+                        }
+                    }, {
+                        label: '中高风险来往本地人员',
+                        onClick: function () {
+                            that.ryfl = '中高风险来往本地人员'
+                        }
+                    }, {
+                        label: '病人及陪护',
+                        onClick: function () {
+                            that.ryfl = '病人及陪护'
+                        }
+                    }, {
+                        label: '其他',
+                        onClick: function () {
+                            that.ryfl = '其他'
+                        }
+                    }
+                ]);
+                $(".weui-actionsheet__menu").attr('style', 'overflow: auto;height: 400px;')
+            },
+            gfxClick() {
+                let that = this
+                weui.actionSheet([
+                    {
+                        label: '否',
+                        onClick: function () {
+                            that.gfx = '0'
+                        }
+                    }, {
+                        label: '是',
+                        onClick: function () {
+                            that.gfx = '1'
+                        }
+                    }
+                ]);
+            },
+            frClick() {
+                let that = this
+                weui.actionSheet([
+                    {
+                        label: '否',
+                        onClick: function () {
+                            that.fr = '0'
+                        }
+                    }, {
+                        label: '是',
+                        onClick: function () {
+                            that.fr = '1'
+                        }
+                    }
+                ]);
+            },
+            zfClick() {
+                let that = this
+                weui.actionSheet([
+                    {
+                        label: '否',
+                        onClick: function () {
+                            that.zf = '0'
+                        }
+                    }, {
+                        label: '是',
+                        onClick: function () {
+                            that.zf = '1'
+                        }
+                    }
+                ]);
+            },
+            sfzhChange() {
+                if (!checkIdCard(this.sfzh) && !isNullOrEmpty(this.sfzh)) {
+                    this.xb = ''
+                    this.nl = ''
+                    weui.alert("身份证号格式不正确");
+                }
+                else {
+                    if (!isNullOrEmpty(this.sfzh)) {
+                        this.xb = getSexFromIdCard(this.sfzh)
+                        this.nl = getAgeFromIdCard(this.sfzh)
+                    }
+                }
+            },
+            verify() {
+                if (isNullOrEmpty(this.xm)) {
+                    weui.alert("请填写您的姓名");
+                    return false;
+                }
+                if (isNullOrEmpty(this.sfzh)) {
+                    weui.alert("请填写您的身份证号");
+                    return false;
+                }
+                if (!checkIdCard(this.sfzh)) {
+                    weui.alert("请输入正确身份证号");
+                    return false;
+                }
+                if (isNullOrEmpty(this.sjh)) {
+                    weui.alert("请填写您的手机号");
+                    return false;
+                }
+                if (!verifyPhone(this.sjh)) {
+                    weui.alert("请输入正确手机号");
+                    return false;
+                }
+                //if (isNullOrEmpty(this.xzz)) {
+                //    weui.alert("请填写您的现住址");
+                //    return false;
+                //}
+                //if (isNullOrEmpty(this.hjdz)) {
+                //    weui.alert("请填写您的户籍地址");
+                //    return false;
+                //}
+                //if (isNullOrEmpty(this.ryfl) || this.ryfl == '请选择人员类别') {
+                //    weui.alert("请选择人员类别");
+                //    return false;
+                //}
+                return true
+            },
+            smClick() {
+                $("#fileInput").val()
+                $("#fileInput").click()
+            },
+            zzClick() {
+                this.isZzShow = false
+            },
+            submit() {
+                if (this.verify()) {
+                    this.isZzShow = true
+                }
+            },
+            payClick() {
+                let that = this
+                loading = weui.loading("提交中...");
+                let url = '../Action/InfoCreate.ashx'
+                let data = {
+                    'operate': 'Register',
+                    "xm": this.xm,
+                    "sfzh": this.sfzh,
+                    "xb": this.xb,
+                    "nl": this.nl,
+                    "sjh": this.sjh,
+                    "xzz": this.xzz,
+                    "hjdz": this.hjdz,
+                    "gfx": this.gfx,
+                    "fr": this.fr,
+                    "ryfl": this.ryfl == '请选择人员类别' ? '' : this.ryfl,
+                    "zf": this.zf,
+                    "ly": sessionStorage.getItem('ly'),
+                    "yyid": this.yyInfo.CODE,
+                    "cjdbm": this.yyInfo.CJDBM,
+                    "qd": sessionStorage.getItem('qd') || '',
+                    "openid": sessionStorage.getItem('openid'),
+                    "xmdm": that.xmlxInfo.ITEM_CODE,
+                    "xmmc": that.xmlxInfo.ITEM_NAME,
+                    "je": that.xmlxInfo.ITEM_MONEY
+                }
+                ajax(url, data).then(res => {
+                    if (res.IsSuccess) {
+                        let lsh = res.Data
+                        if (lsh) {
+                            sessionStorage.setItem('lsh', lsh)
+                            if (that.xmlxInfo.ITEM_MONEY > 0) {
+                                if (typeof WeixinJSBridge == "undefined") {
+                                    if (document.addEventListener) {
+                                        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                                    } else if (document.attachEvent) {
+                                        document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                                        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                                    }
+                                } else {
+                                    let attch = "{\"LSH\":\"" + lsh + "\",\"JE\":\"" + that.xmlxInfo.ITEM_MONEY + "\"}";
+                                    let data = {
+                                        'operate': 'Pay',
+                                        "total_fee": that.xmlxInfo.ITEM_MONEY,
+                                        "attach": attch,
+                                        "openid": sessionStorage.getItem('openid')
+                                    }
+                                    ajax(url, data).then(res => {
+                                        if (res.appId) {
+                                            loading.hide()
+                                            that.onBridgeReady(res.appId, res.timeStamp, res.nonceStr, res.package, res.signType, res.paySign);
+                                        }
+                                        else {
+                                            loading.hide()
+                                            that.clear()
+                                        }
+                                    })
+                                }
+                            }
+                            else {
+                                loading.hide()
+                                that.clear()
+                            }
+                        }
+                        else {
+                            loading.hide()
+                            weui.alert("获取流水号失败，请联系管理人员")
+                        }
+                    }
+                    else {
+                        loading.hide()
+                        weui.alert(res.Data)
+                    }
+                })
+            },
+            //发起H5微信支付函数
+            onBridgeReady(appId, timeStamp, nonceStr, packages, signType, paySign) {
+                let that = this
+                WeixinJSBridge.invoke(
+                    'getBrandWCPayRequest', {
+                    "appId": appId,
+                    "timeStamp": timeStamp,
+                    "nonceStr": nonceStr,
+                    "package": packages,
+                    "signType": signType,
+                    "paySign": paySign
+                },
+                    function (res) {
+                        if (res.err_msg == "get_brand_wcpay_request:ok") {
+                            that.clear()
+                        }
+                        // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回 ok，但并不保证它绝对可靠。
+                    }
+                );
+            },
+            clear() {
+                this.isZzShow = false
+                this.xm = ''
+                this.sfzh = ''
+                this.xb = ''
+                this.nl = ''
+                this.sjh = ''
+                this.xzz = ''
+                this.ryfl = '请选择人员类别'
+                this.gfx = '0'
+                this.fr = '0'
+                this.zf = '0'
+                location.href = './InfoDetails.html'
+            }
+        }
+    })
+
+    function uploadImg(e) {
+        var files = e.files;
+        if (files.length == 0) {
+            weui.alert("获取图片失败")
+            return;
+        }
+        if (files.length > 1) {
+            weui.alert("请重新上传一张图片")
+            return;
+        }
+        var formData = new FormData();
+        formData.append('file', files[0]);
+        loading = weui.loading("识别中...");
+        $.ajax({
+            type: "POST",
+            url: "../Action/Ocr.ashx",
+            data: formData,
+            dataType: "json",
+            processData: false,
+            contentType: false,
+            success: function (rel) {
+                loading.hide()
+                if (rel.name) {
+                    if (!checkIdCard(rel.num)) {
+                        weui.alert("身份证识别失败，请上传清晰的身份证正面照");
+                    }
+                    else {
+                        app.xm = rel.name
+                        app.sfzh = rel.num
+                        app.hjdz = rel.address
+                        app.xb = getSexFromIdCard(rel.num)
+                        app.nl = getAgeFromIdCard(rel.num)
+                    }
+                }
+                else {
+                    weui.alert("身份证识别失败，请稍后重试")
+                }
+            }
+        })
+    }
+</script>
